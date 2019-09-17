@@ -12,5 +12,8 @@
   "devDependencies": {
     "webpack": "^4.40.2",
     "webpack-cli": "^3.3.9"
+  },
+  "dependencies": {
+    "pubsub-js": "^1.7.0"
   }
 }

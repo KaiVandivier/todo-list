@@ -36,9 +36,10 @@ const domManager = ...
 TODO:
 -Move 'topic constants' to a single place; make symbols
   (They are currently just hardcoded into each module)
--Publish a call to an action in TodoIO.getAction()
 
 FINISHED AND NOTES:
 -Realized that testing functions with PubSub from /inside/ a module doesn't work! Other modules have not had the time to subscribe.
 -An error in which TodoIO subscribers were not firing was fixed by reincluding the import statement of TodoIO in index.js.  Why was it working before?
--Making several publications to "Create todo" increased the size of the todo list before the calls to "print list" were shown even once - interesting.  Using "setTimeout()" worked to space them out. 
+-Making several publications to "Create todo" increased the size of the todo list before the calls to "print list" were shown even once - interesting.  Using "setTimeout()" worked to space them out.
+-Create, edit, and delete are working 
+-Publish a call to an action in TodoIO.getAction()

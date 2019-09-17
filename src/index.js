@@ -82,5 +82,5 @@ setTimeout(() => PubSub.publish(EDIT_TODO, editTest), 300);
 // DELETE
 setTimeout(() => PubSub.publish(DELETE_TODO, 1), 400);
 
-// PubSub.publish(GET_ACTION);
-// PubSub.publish(GET_INDEX);
+// GET_ACTION
+setTimeout(() => PubSub.publish(GET_ACTION), 500);

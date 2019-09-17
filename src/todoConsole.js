@@ -25,21 +25,27 @@ const TodoIO = (function() {
 
   const getAction = function() {
     const action = prompt(`Enter an action:\n'new', 'edit', or 'delete'`)
-    if (['new', 'edit', 'delete'].includes(action)) {
-      console.log(action);
-      return action;
-      // TODO: Call that actual action by publishing
+
+    let index;
+    switch (action) {
+      case 'new':
+        PubSub.publish(CREATE_TODO, {title: '', description: '', 
+          dueDate: '', priority: ''});
+        break;
+      case 'edit':
+        index = getIndex();
+        PubSub.publish(EDIT_TODO, {index, title: '', description: '',
+          dueDate: '', priority: ''});
+        break;
+      case 'delete':
+        index = getIndex();
+        PubSub.publish(DELETE_TODO, index);
     }
-    else return false;
-    // TODO: Publish a call to that actual action
   };
 
   const getIndex = function() {
     const index = Number(prompt('Enter index of target entry:'));
-    if (!isNaN(index)) {
-      console.log(index);
-      return index;
-    }
+    if (!isNaN(index)) return index;
     else return false;
   }
 

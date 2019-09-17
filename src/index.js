@@ -15,6 +15,8 @@ const PRINT_LIST = 'print list';
 const GET_ACTION = 'get action';
 const GET_INDEX = 'get index';
 const CREATE_TODO = 'create todo';
+const EDIT_TODO = 'edit todo';
+const DELETE_TODO = 'delete todo';
 
 const TodoController = (function() {
   let todoList = [];
@@ -24,35 +26,39 @@ const TodoController = (function() {
     console.log(msg);
     const newTodo = todo(args.title, args.description, args.dueDate, args.priority);
     todoList.push(newTodo);
-    PubSub.publish(PRINT_LIST, todoList);
-    // TODO: get next action ("Print" can go in there too)
+    getNextAction();
   };
 
   // edit
-  const editTodo = function(msg, args) { // needs testing
+  const editTodo = function(msg, args) { // working
     // Expecting and object with:
     // 1) an index and 2) new values for the entry
+    console.log(msg)
     const targetIndex = args.index;
     const newTodo = todo(args.title, args.description, args.dueDate,
       args.priority);
     todoList.splice(targetIndex, 1, newTodo)
-
-
+    getNextAction();
   };
 
   // delete/complete
   const deleteTodo = function(msg, removalIndex) { // needs testing
     // Expecting "data" to be index to remove
-    // Same as edit
-    const targetIndex = -1; // TODO; ".findIndex()"
+    console.log(msg);
     todoList.splice(removalIndex, 1);
+    getNextAction();
   };
 
-  let token = PubSub.subscribe(CREATE_TODO, createTodo);
-
-  return {
-    todoList,
+  const getNextAction = function() {
+    PubSub.publish(PRINT_LIST, todoList);
+    // PubSub.publish(GET_ACTION); // TODO: Remove when DOM is online
   }
+
+  let token = PubSub.subscribe(CREATE_TODO, createTodo);
+  let token1 = PubSub.subscribe(EDIT_TODO, editTodo);
+  let token2 = PubSub.subscribe(DELETE_TODO, deleteTodo);
+
+  return
 })();
 
 
@@ -63,14 +69,15 @@ const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24
 const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
 const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
 
+// CREATE
 PubSub.publish(CREATE_TODO, testTodo);
 PubSub.publish(CREATE_TODO, testTodo1);
 PubSub.publish(CREATE_TODO, testTodo2);
 
-// PubSub.publish(PRINT_LIST, todoList);
+// EDIT
+const newTestTodo = todo('A', 'B', 'C', 'D');
+const editTest = Object.assign({index: 1}, newTestTodo)
+setTimeout(() => PubSub.publish(EDIT_TODO, editTest), 500);
 
-// const testTodoList = [testTodo, testTodo1, testTodo2];
-
-// PubSub.publish(PRINT_LIST, testTodoList);
 // PubSub.publish(GET_ACTION);
 // PubSub.publish(GET_INDEX);

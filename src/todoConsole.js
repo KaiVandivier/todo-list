@@ -11,6 +11,8 @@ const PRINT_LIST = 'print list';
 const GET_ACTION = 'get action';
 const GET_INDEX = 'get index';
 const CREATE_TODO = 'create todo';
+const EDIT_TODO = 'edit todo';
+const DELETE_TODO = 'delete todo';
 
 const TodoIO = (function() {
   const printList = function(_, todoList) {
@@ -26,6 +28,7 @@ const TodoIO = (function() {
     if (['new', 'edit', 'delete'].includes(action)) {
       console.log(action);
       return action;
+      // TODO: Call that actual action by publishing
     }
     else return false;
     // TODO: Publish a call to that actual action

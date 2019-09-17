@@ -1,6 +1,13 @@
 import PubSub from 'pubsub-js';
 import todo from './todo.js';
 import TodoIO from './todoConsole.js';
+import {
+  PRINT_LIST,
+  GET_ACTION,
+  CREATE_TODO,
+  EDIT_TODO,
+  DELETE_TODO,
+} from './event-types.js';
 
 /* PUBSUB SYNTAX
 const mySubscriber = (msg, data) => {
@@ -9,23 +16,22 @@ const mySubscriber = (msg, data) => {
 var token = PubSub.subscribe('MY TOPIC', mySubscriber);
 PubSub.publish('MY TOPIC', 'hello world!');        */
 
-// TODO: Get these from a separate file
-// Also make them symbols?
-const PRINT_LIST = 'print list';
-const GET_ACTION = 'get action';
-const GET_INDEX = 'get index';
-const CREATE_TODO = 'create todo';
-const EDIT_TODO = 'edit todo';
-const DELETE_TODO = 'delete todo';
 
 const TodoController = (function() {
   let todoList = [];
+
+  // These will need to accept an argument of the list they are editing...
+    // in which case, the DOM will need to sense which project is active
+  // OR, making this into a factory function
+    // only the "active" project will have subscriptions
+    // (Achieve this by removing subscriptions to CRUD topics from the inactive projects)
+    // Would these functions move to a prototype?
 
   const createTodo = function(msg, args) { //working
     // This happens on form completion
     console.log(msg);
     const newTodo = todo(args.title, args.description, args.dueDate, args.priority);
-    todoList.push(newTodo);
+    todoList.push(newTodo); // will need an edit to work with projects
     getNextAction();
   };
 

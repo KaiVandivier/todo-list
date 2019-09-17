@@ -1,8 +1,5 @@
 Planning:
 
-Make a "Todo" object: either a class, module, or factory function
-  -Has properties: title, description, dueDate, priority
-
 Be able to tab through projects or separate lists of todos
   -When a user first opens the app, there should be some sort of ‘default’ project to which all of their todos are put. 
   -Users should be able to create new projects and choose which project their todos go into.
@@ -34,6 +31,7 @@ const domManager = ...
   Publish?
 
 TODO:
+-Enable several Todo Lists / projects
 -Move 'topic constants' to a single place; make symbols
   (They are currently just hardcoded into each module)
 
@@ -43,3 +41,5 @@ FINISHED AND NOTES:
 -Making several publications to "Create todo" increased the size of the todo list before the calls to "print list" were shown even once - interesting.  Using "setTimeout()" worked to space them out.
 -Create, edit, and delete are working 
 -Publish a call to an action in TodoIO.getAction()
+-Make a "Todo" object: either a class, module, or factory function
+  -Has properties: title, description, dueDate, priority

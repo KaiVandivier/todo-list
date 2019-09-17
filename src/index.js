@@ -30,8 +30,8 @@ const TodoController = (function() {
   };
 
   // edit
-  const editTodo = function(msg, args) { // working
-    // Expecting and object with:
+  const editTodo = function(msg, args) {
+    // Expecting an object with:
     // 1) an index and 2) new values for the entry
     console.log(msg)
     const targetIndex = args.index;
@@ -42,7 +42,7 @@ const TodoController = (function() {
   };
 
   // delete/complete
-  const deleteTodo = function(msg, removalIndex) { // needs testing
+  const deleteTodo = function(msg, removalIndex) {
     // Expecting "data" to be index to remove
     console.log(msg);
     todoList.splice(removalIndex, 1);
@@ -77,7 +77,10 @@ PubSub.publish(CREATE_TODO, testTodo2);
 // EDIT
 const newTestTodo = todo('A', 'B', 'C', 'D');
 const editTest = Object.assign({index: 1}, newTestTodo)
-setTimeout(() => PubSub.publish(EDIT_TODO, editTest), 500);
+setTimeout(() => PubSub.publish(EDIT_TODO, editTest), 300);
+
+// DELETE
+setTimeout(() => PubSub.publish(DELETE_TODO, 1), 400);
 
 // PubSub.publish(GET_ACTION);
 // PubSub.publish(GET_INDEX);

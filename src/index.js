@@ -1,6 +1,6 @@
 import PubSub from 'pubsub-js';
 import todo from './todo.js';
-import TodoIO from './todoConsole.js';
+import TodoIO from './todo-io.js';
 import {
   PRINT_LIST,
   GET_ACTION,
@@ -8,14 +8,6 @@ import {
   EDIT_TODO,
   DELETE_TODO,
 } from './event-types.js';
-
-/* PUBSUB SYNTAX
-const mySubscriber = (msg, data) => {
-  console.log( msg, data );
-};
-var token = PubSub.subscribe('MY TOPIC', mySubscriber);
-PubSub.publish('MY TOPIC', 'hello world!');        */
-
 
 const TodoController = (function() {
   let todoList = [];
@@ -27,22 +19,21 @@ const TodoController = (function() {
     // (Achieve this by removing subscriptions to CRUD topics from the inactive projects)
     // Would these functions move to a prototype?
 
-  const createTodo = function(msg, args) { //working
+  const createTodo = function(msg, { title, description, dueDate, priority }) { //working
     // This happens on form completion
     console.log(msg);
-    const newTodo = todo(args.title, args.description, args.dueDate, args.priority);
+    const newTodo = todo(title, description, dueDate, priority);
     todoList.push(newTodo); // will need an edit to work with projects
     getNextAction();
   };
 
   // edit
-  const editTodo = function(msg, args) {
+  const editTodo = function(msg, { index, title, description, dueDate, priority }) {
     // Expecting an object with:
     // 1) an index and 2) new values for the entry
     console.log(msg)
-    const targetIndex = args.index;
-    const newTodo = todo(args.title, args.description, args.dueDate,
-      args.priority);
+    const targetIndex = index;
+    const newTodo = todo(title, description, dueDate, priority);
     todoList.splice(targetIndex, 1, newTodo)
     getNextAction();
   };
@@ -71,6 +62,7 @@ const TodoController = (function() {
 
 // ------ Testing --------
 
+
 const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
 const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
 const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
@@ -90,3 +82,4 @@ setTimeout(() => PubSub.publish(DELETE_TODO, 1), 400);
 
 // GET_ACTION
 setTimeout(() => PubSub.publish(GET_ACTION), 500);
+

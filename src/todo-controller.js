@@ -23,27 +23,21 @@ const TodoController = (function() {
     // This happens on form completion
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
-    todoList.push(newTodo); // will need an edit to work with projects
+    todoList.push(newTodo);
     getNextAction();
   };
 
   // edit
   const editTodo = function(msg, { /*todoList,*/ index, title, description, dueDate, priority }) {
-    // Expecting an object with:
-    // 1) an index and 2) new values for the entry
-    console.log(msg)
-    const targetIndex = index;
+    console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
-    // this.todoList?
-    todoList.splice(targetIndex, 1, newTodo)
+    todoList.splice(index, 1, newTodo)
     getNextAction();
   };
 
   // delete/complete
   const deleteTodo = function(msg, { /*todoList,*/ index }) {
-    // Expecting "data" to be index to remove
     console.log(msg);
-    console.log(index);
     todoList.splice(index, 1);
     getNextAction();
   };

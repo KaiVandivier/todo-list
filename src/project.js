@@ -2,8 +2,6 @@
 
 const project = function(title, description, participants) {
   const todoList = [];
-
-
   return {
     title,
     description,
@@ -11,3 +9,5 @@ const project = function(title, description, participants) {
     todoList,
   }
 };
+
+export default project;

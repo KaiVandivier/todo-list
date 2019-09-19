@@ -38,7 +38,7 @@ const TodoIO = (function() {
         break;
       case 'delete':
         index = getIndex();
-        PubSub.publish(DELETE_TODO, index);
+        PubSub.publish(DELETE_TODO, {index});
     }
   };
 

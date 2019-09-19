@@ -7,12 +7,10 @@ import {
   DELETE_TODO,
 } from './event-types.js';
 import todo from './todo.js';
-import TodoIO from './todo-io.js';
-import TodoController from './todo-controller.js';
 
-/***************
+
 const TodoController = (function() {
-  let todoList = [];
+  let todoList = []; // Later remove
 
   // These will need to accept an argument of the list they are editing...
     // in which case, the DOM will need to sense which project is active
@@ -21,7 +19,7 @@ const TodoController = (function() {
     // (Achieve this by removing subscriptions to CRUD topics from the inactive projects)
     // Would these functions move to a prototype?
 
-  const createTodo = function(msg, { title, description, dueDate, priority }) { //working
+  const createTodo = function(msg, { /*todoList,*/ title, description, dueDate, priority }) { //working
     // This happens on form completion
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
@@ -30,21 +28,23 @@ const TodoController = (function() {
   };
 
   // edit
-  const editTodo = function(msg, { index, title, description, dueDate, priority }) {
+  const editTodo = function(msg, { /*todoList,*/ index, title, description, dueDate, priority }) {
     // Expecting an object with:
     // 1) an index and 2) new values for the entry
     console.log(msg)
     const targetIndex = index;
     const newTodo = todo(title, description, dueDate, priority);
+    // this.todoList?
     todoList.splice(targetIndex, 1, newTodo)
     getNextAction();
   };
 
   // delete/complete
-  const deleteTodo = function(msg, removalIndex) {
+  const deleteTodo = function(msg, { /*todoList,*/ index }) {
     // Expecting "data" to be index to remove
     console.log(msg);
-    todoList.splice(removalIndex, 1);
+    console.log(index);
+    todoList.splice(index, 1);
     getNextAction();
   };
 
@@ -59,29 +59,5 @@ const TodoController = (function() {
 
   return
 })();
-***********************/
 
-
-// ------ Testing --------
-
-
-const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
-const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
-const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
-
-// CREATE
-PubSub.publish(CREATE_TODO, testTodo);
-PubSub.publish(CREATE_TODO, testTodo1);
-PubSub.publish(CREATE_TODO, testTodo2);
-
-// EDIT
-const newTestTodo = todo('A', 'B', 'C', 'D');
-const editTest = Object.assign({index: 1}, newTestTodo)
-setTimeout(() => PubSub.publish(EDIT_TODO, editTest), 300);
-
-// DELETE
-setTimeout(() => PubSub.publish(DELETE_TODO, {index: 1}), 400);
-
-// GET_ACTION
-setTimeout(() => PubSub.publish(GET_ACTION), 500);
-
+export default TodoController;

@@ -11,9 +11,152 @@ import {
 } from './event-types.js';
 import todo from './todo.js';
 import TodoIO from './todo-io.js';
-import TodoController from './todo-controller.js';
+// import TodoController from './todo-controller.js';
 import project from './project.js'
-import ProjectController from './project-controller.js';
+// import ProjectController from './project-controller.js';
+
+
+//WIP
+
+const Application = (function() {
+  console.log('this, inside Application():');
+  console.log(this);
+  // todo: get project list from storage
+  const projectList = [];
+  // todo: choose active project (currently a placeholder)
+  let activeProject = project('','','');
+  
+  if (projectList.length == 0) {
+    // make default project
+    // make it active
+  }; 
+
+  // Display Page
+    // -Show project (display project)
+    // -Show each todo  
+
+
+  /* Todo logic -- working */
+  const createTodo = function(msg, { title, description, dueDate, priority }) { //working
+    // This happens on form completion
+    console.log(msg);
+    const newTodo = todo(title, description, dueDate, priority);
+    activeProject.todoList.push(newTodo);
+    getNextAction();
+  };
+
+  // edit
+  const editTodo = function(msg, { index, title, description, dueDate, priority }) {
+    console.log(msg);
+    const newTodo = todo(title, description, dueDate, priority);
+    activeProject.todoList.splice(index, 1, newTodo)
+    getNextAction();
+  };
+
+  // delete/complete
+  const deleteTodo = function(msg, { index }) {
+    console.log(msg);
+    activeProject.todoList.splice(index, 1);
+    getNextAction();
+  };
+
+  const getNextAction = function() {
+    PubSub.publish(PRINT_LIST, activeProject.todoList);
+    // PubSub.publish(GET_ACTION); // TODO: Remove when DOM is online
+  }
+
+  let token0 = PubSub.subscribe(CREATE_TODO, createTodo);
+  let token1 = PubSub.subscribe(EDIT_TODO, editTodo);
+  let token2 = PubSub.subscribe(DELETE_TODO, deleteTodo);
+  /* End Todo logic */
+
+
+  /* Project Logic -- WIP */
+  // create 
+  const createProject = function(msg, { title, description, participants }) {
+    // This happens on form completion
+    console.log(msg);
+    const newProject = project(title, description, participants);
+    projectList.push(newProject); 
+    // getNextAction();
+  };
+
+  // edit
+  const editProject = function(msg, { index, title, description, participants }) {
+    console.log(msg)
+    const newProject = project(title, description, participants);
+    projectList.splice(index, 1, newProject)
+    // getNextAction();
+  };
+
+  // delete/complete
+  const deleteProject = function(msg, { index }) {
+    console.log(msg);
+    projectList.splice(index, 1);
+    // getNextAction();
+  };
+
+  let token3 = PubSub.subscribe(CREATE_PROJECT, createProject);
+  let token4 = PubSub.subscribe(EDIT_PROJECT, editProject);
+  let token5 = PubSub.subscribe(DELETE_PROJECT, deleteProject);
+  /* End Project Logic */
+ 
+
+  return {
+    projectList, // for testing purposes
+  }
+
+})();
+
+
+
+
+// ----------- TESTING PROTOTYPAL INHERITANCE -------
+
+/*
+const project = function() {
+  const todoList = [];
+  return Object.assign(Object.create(Object.getPrototypeOf(TodoController)), {todoList});
+}
+
+const TodoController = (function() {
+  const proto = {
+    add: function() {
+      console.log(this);
+      this.todoList.push('hi');
+    },
+    test: () => console.log('test successful!'),
+  }
+  return Object.create(proto);
+})();
+
+
+
+TodoController.test()
+console.log('TodoController prototype:');
+console.log(Object.getPrototypeOf(TodoController));
+
+console.log('this:');
+console.log(this)
+
+
+
+const myProj = project();
+console.log('myProj prototype:');
+
+console.log(Object.getPrototypeOf(myProj));
+
+console.log('testing myProj.test():');
+myProj.test();
+
+console.log('Testing myProj.todoList and add():');
+console.log(myProj.todoList);
+console.log('adding:');
+myProj.add(); //works!
+//myProj.add.call(myProj) worked with 'this'!
+console.log(myProj.todoList);
+*/
+
 
 
 // --------- TESTING TODOS ---------------
@@ -45,25 +188,30 @@ setTimeout(() => PubSub.publish(GET_ACTION), 500);
 
 /*
 // project objects
-const testProj0 = project('myProj', 'a test', 'just me!');
-console.log(testProj0);
-const testProj1 = project('myProj1', 'test2', 'hello');
+const testProj1 = project('myProj', 'a test', 'just me!');
+console.log('testProj1:');
+console.log(testProj1);
+const testProj2 = project('myProj1', 'test2', 'hello');
 
 // CREATE - working
-const testProjectList = [];
-const testArgs1 = Object.assign(testProj0, {projectList: testProjectList});
-const testArgs2 = Object.assign(testProj1, {projectList: testProjectList})
-PubSub.publish(CREATE_PROJECT, testArgs1);
-PubSub.publish(CREATE_PROJECT, testArgs2);
-console.log(testProjectList);
+PubSub.publish(CREATE_PROJECT, testProj1);
+PubSub.publish(CREATE_PROJECT, testProj2);
+console.log('project list after two create calls:');
+console.log(Application.projectList);
 
-// EDIT - working
-const editArgs1 = Object.assign(testArgs1, {index: 1});
-PubSub.publish(EDIT_PROJECT, editArgs1);
-console.log(testProjectList);
+// EDIT -- working
+const editArgs1 = Object.assign(testProj1, {index: 1});
+setTimeout(() => {
+  PubSub.publish(EDIT_PROJECT, editArgs1);
+  console.log('project list after edit call:');
+  console.log(Application.projectList);
+}, 5000);
+
 
 // DELETE -- working
-PubSub.publish(DELETE_PROJECT, {index: 1, projectList: testProjectList});
-console.log(testProjectList);
-*/
+setTimeout(() => {
+  PubSub.publish(DELETE_PROJECT, {index: 1});
+  console.log(Application.projectList);
+}, 10000);
+/**/
 

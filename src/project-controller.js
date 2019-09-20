@@ -44,3 +44,14 @@ const ProjectController = (function() {
 
   return
 })();
+
+
+// Refactored as a class:
+/*
+class ProjectList {
+  const projectList = 
+  constructor() {
+
+  }
+}
+*/

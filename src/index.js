@@ -11,20 +11,16 @@ import {
 } from './event-types.js';
 import todo from './todo.js';
 import TodoIO from './todo-io.js';
-// import TodoController from './todo-controller.js';
-import project from './project.js'
-// import ProjectController from './project-controller.js';
+import project from './project.js';
 
 
 //WIP
 
 const Application = (function() {
-  console.log('this, inside Application():');
-  console.log(this);
   // todo: get project list from storage
   const projectList = [];
   // todo: choose active project (currently a placeholder)
-  let activeProject = project('','','');
+  let activeProject = project('');
   
   if (projectList.length == 0) {
     // make default project
@@ -71,20 +67,20 @@ const Application = (function() {
   /* End Todo logic */
 
 
-  /* Project Logic -- WIP */
+  /* Project Logic -- working */
   // create 
-  const createProject = function(msg, { title, description, participants }) {
+  const createProject = function(msg, { title }) {
     // This happens on form completion
     console.log(msg);
-    const newProject = project(title, description, participants);
+    const newProject = project(title);
     projectList.push(newProject); 
     // getNextAction();
   };
 
   // edit
-  const editProject = function(msg, { index, title, description, participants }) {
+  const editProject = function(msg, { index, title }) {
     console.log(msg)
-    const newProject = project(title, description, participants);
+    const newProject = project(title);
     projectList.splice(index, 1, newProject)
     // getNextAction();
   };
@@ -186,12 +182,12 @@ setTimeout(() => PubSub.publish(GET_ACTION), 500);
 
 // -------- TESTING PROJECTS ---------------
 
-/*
+/**/
 // project objects
-const testProj1 = project('myProj', 'a test', 'just me!');
+const testProj1 = project('myProj');
 console.log('testProj1:');
 console.log(testProj1);
-const testProj2 = project('myProj1', 'test2', 'hello');
+const testProj2 = project('myProj1');
 
 // CREATE - working
 PubSub.publish(CREATE_PROJECT, testProj1);

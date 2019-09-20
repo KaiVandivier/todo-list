@@ -1,12 +1,10 @@
 // Make a project object
 
-const project = function(title, description, participants) {
+const project = function(title) {
   const todoList = [];
   return {
     title,
-    description,
-    participants,
-    todoList,
+    todoList
   }
 };
 

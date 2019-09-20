@@ -1,3 +1,5 @@
+// This module is currently unused
+
 import PubSub from 'pubsub-js';
 import {
   PRINT_LIST,

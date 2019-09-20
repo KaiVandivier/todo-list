@@ -1,3 +1,4 @@
+// This module is currently unused
 // Create, edit, and delete projects
 
 import PubSub from 'pubsub-js';

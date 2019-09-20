@@ -8,19 +8,25 @@ import {
   CREATE_PROJECT,
   EDIT_PROJECT,
   DELETE_PROJECT,
+  SET_UP_PAGE,
+  RENDER_PROJECT_LIST,
+  RENDER_PROJECT,
 } from './event-types.js';
 import todo from './todo.js';
 import TodoIO from './todo-io.js';
 import project from './project.js';
+import Display from './dom-manager.js';
 
 
 //WIP
-
 const Application = (function() {
   // todo: get project list from storage
   const projectList = [];
   // todo: choose active project (currently a placeholder)
   let activeProject = project('');
+  const getActiveProject = () => {
+    return activeProject;
+  }
   
   if (projectList.length == 0) {
     // make default project
@@ -70,10 +76,10 @@ const Application = (function() {
   /* Project Logic -- working */
   // create 
   const createProject = function(msg, { title }) {
-    // This happens on form completion
     console.log(msg);
     const newProject = project(title);
     projectList.push(newProject); 
+    activeProject = newProject;
     // getNextAction();
   };
 
@@ -97,9 +103,10 @@ const Application = (function() {
   let token5 = PubSub.subscribe(DELETE_PROJECT, deleteProject);
   /* End Project Logic */
  
-
   return {
     projectList, // for testing purposes
+    activeProject,
+    getActiveProject,
   }
 
 })();
@@ -182,7 +189,7 @@ setTimeout(() => PubSub.publish(GET_ACTION), 500);
 
 // -------- TESTING PROJECTS ---------------
 
-/**/
+/*
 // project objects
 const testProj1 = project('myProj');
 console.log('testProj1:');
@@ -211,3 +218,39 @@ setTimeout(() => {
 }, 10000);
 /**/
 
+
+// ----------- TESTING DOM MANAGER -------------
+// Working, using timeout at bottom -- huh
+// project objects
+const testProj1 = project('Test Project 1');
+console.log('testProj1:');
+console.log(testProj1);
+const testProj2 = project('Test Project 2');
+
+// CREATE - working
+PubSub.publish(CREATE_PROJECT, testProj1);
+PubSub.publish(CREATE_PROJECT, testProj2);
+console.log('project list after two create calls:');
+console.log(Application.projectList);
+
+// todo objects
+const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
+const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
+const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
+
+// CREATE
+PubSub.publish(CREATE_TODO, testTodo);
+PubSub.publish(CREATE_TODO, testTodo1);
+PubSub.publish(CREATE_TODO, testTodo2);
+
+
+
+// WRITE PROJECT LIST
+PubSub.publish(RENDER_PROJECT_LIST, Application.projectList);
+
+setTimeout(() => {
+  console.log('Active project:');
+  console.log(Application.getActiveProject());
+  PubSub.publish(RENDER_PROJECT, Application.getActiveProject());
+});
+/**/

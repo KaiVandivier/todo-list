@@ -9,6 +9,10 @@ const CREATE_PROJECT = 'create project';
 const EDIT_PROJECT = 'edit project';
 const DELETE_PROJECT = 'delete project';
 
+const SET_UP_PAGE = 'set up page';
+const RENDER_PROJECT_LIST = 'render project list';
+const RENDER_PROJECT = 'render project';
+
 export {
   PRINT_LIST,
   GET_ACTION,
@@ -18,4 +22,7 @@ export {
   CREATE_PROJECT,
   EDIT_PROJECT,
   DELETE_PROJECT,
+  SET_UP_PAGE,
+  RENDER_PROJECT_LIST,
+  RENDER_PROJECT,
 };

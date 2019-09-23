@@ -11,6 +11,7 @@ import {
   SET_UP_PAGE,
   RENDER_PROJECT_LIST,
   RENDER_PROJECT,
+  SWITCH_PROJECT,
 } from './event-types.js';
 import todo from './todo.js';
 import TodoIO from './todo-io.js';
@@ -102,6 +103,14 @@ const Application = (function() {
   let token4 = PubSub.subscribe(EDIT_PROJECT, editProject);
   let token5 = PubSub.subscribe(DELETE_PROJECT, deleteProject);
   /* End Project Logic */
+
+  const switchProject = function(msg, index) {
+    console.log(msg);
+    activeProject = projectList[index];
+    PubSub.publish(RENDER_PROJECT, activeProject);
+  }
+
+  PubSub.subscribe(SWITCH_PROJECT, switchProject);
  
   return {
     projectList, // for testing purposes
@@ -221,7 +230,7 @@ setTimeout(() => {
 
 // ----------- TESTING DOM MANAGER -------------
 // Working, using timeout at bottom -- huh
-// project objects
+// project objectsconsole
 const testProj1 = project('Test Project 1');
 console.log('testProj1:');
 console.log(testProj1);

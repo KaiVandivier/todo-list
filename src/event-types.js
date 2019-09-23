@@ -13,6 +13,8 @@ const SET_UP_PAGE = 'set up page';
 const RENDER_PROJECT_LIST = 'render project list';
 const RENDER_PROJECT = 'render project';
 
+const SWITCH_PROJECT = 'switch project';
+
 export {
   PRINT_LIST,
   GET_ACTION,
@@ -25,4 +27,5 @@ export {
   SET_UP_PAGE,
   RENDER_PROJECT_LIST,
   RENDER_PROJECT,
+  SWITCH_PROJECT,
 };

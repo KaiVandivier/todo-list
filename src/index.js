@@ -1,3 +1,4 @@
+import './styles.css';
 import PubSub from 'pubsub-js';
 import {
   PRINT_LIST,

@@ -71,13 +71,18 @@ const Display = (function() {
   const renderProject = function(msg, project) {
     console.log(msg);
 
-    // TODO: If no projects, write a message to make a new one
-
     // clear project div ...
     while (projectDiv.firstChild) {
       projectDiv.removeChild(projectDiv.firstChild);
     };
     // ... and write a new one
+
+    // TODO: If no projects, write a message to make a new one
+    try {
+      let test = project.title;
+    } catch (e) {
+      console.log('No projects');
+    }
 
     // title
     const titleHeader = document.createElement('h3');
@@ -164,6 +169,50 @@ const Display = (function() {
       // PubSub.publish(DELETE_TODO, {index?})
     });
   };
+
+  const displayProjectForm = function() {
+    // const projectForm = document.getElementById('project-form');
+    const formContainer = document.createElement('div');
+    const titleHeader = document.createElement('h3');
+    const projectForm = document.createElement('form');
+    const titleLabel = document.createElement('label');
+    const titleInput = document.createElement('input');
+    const submitButton = document.createElement('input');
+
+    formContainer.id = "form-container";
+    root.appendChild(formContainer);
+
+    titleHeader.textContent = "Project"; // TODO: Adjust to message
+    formContainer.appendChild(titleHeader);
+
+    projectForm.id = "project-form";
+    formContainer.appendChild(projectForm);
+
+    titleLabel.for = "title";
+    titleLabel.textContent = "Project Title: ";
+    projectForm.appendChild(titleLabel);
+
+    titleInput.name = "title";
+    titleInput.type = "text";
+    titleInput.required = true;
+    // TODO: Paste default text here: titleInput.value = ....;
+    projectForm.appendChild(titleInput);
+
+    submitButton.type = "submit";
+    submitButton.value = "Save";
+    projectForm.appendChild(submitButton);
+
+    projectForm.addEventListener('submit', () => {
+      console.log('form submitted!');
+      console.log(e.target);
+      e.preventDefault();
+    });
+  }
+
+  const closeProjectForm = function() {
+    const formContainer = document.getElementById('form-container');
+    if (formContainer) formContainer.parentElement.removeChild(formContainer);
+  }
 
   PubSub.subscribe(SET_UP_PAGE, setUpPage);
   PubSub.subscribe(RENDER_PROJECT_LIST, renderProjectList);

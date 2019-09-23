@@ -82,6 +82,7 @@ const Application = (function() {
     const newProject = project(title);
     projectList.push(newProject); 
     activeProject = newProject;
+    PubSub.publish(RENDER_PROJECT_LIST, projectList);
     // getNextAction();
   };
 

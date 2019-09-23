@@ -16,6 +16,7 @@ import {
 
 const Display = (function() {
   const root = document.getElementById('root');
+  let previousActiveElement = null;
 
   // Project List Div (container)
   const projectListDiv = document.createElement('div');
@@ -28,10 +29,7 @@ const Display = (function() {
   // New Project Button
   const newProjectButton = document.createElement('button');
   newProjectButton.textContent = "New Project";
-  newProjectButton.addEventListener('click', () => {
-    console.log('making new project');
-    // TODO: Open "new project" form
-  });
+  newProjectButton.addEventListener('click', displayNewProjectDialog);
   projectListDiv.appendChild(newProjectButton);
   // Project List Ul (to be populated by "render ... " below)
   const projectListUl = document.createElement('ul');
@@ -170,48 +168,59 @@ const Display = (function() {
     });
   };
 
-  const displayProjectForm = function() {
-    // const projectForm = document.getElementById('project-form');
-    const formContainer = document.createElement('div');
-    const titleHeader = document.createElement('h3');
-    const projectForm = document.createElement('form');
-    const titleLabel = document.createElement('label');
-    const titleInput = document.createElement('input');
-    const submitButton = document.createElement('input');
 
-    formContainer.id = "form-container";
-    root.appendChild(formContainer);
+  // Dialog setup; 
+  function displayNewProjectDialog() {
+    // selector setup
+    const dialog = document.getElementById('project-form-container');
+    const dialogMask = dialog.querySelector('div.dialog-mask');
+    const form = dialog.querySelector('form#project-form');
 
-    titleHeader.textContent = "Project"; // TODO: Adjust to message
-    formContainer.appendChild(titleHeader);
+    // Save active element
+    previousActiveElement = document.activeElement;
 
-    projectForm.id = "project-form";
-    formContainer.appendChild(projectForm);
+    // Show the dialog
+    dialog.classList.add('opened');
 
-    titleLabel.for = "title";
-    titleLabel.textContent = "Project Title: ";
-    projectForm.appendChild(titleLabel);
+    // Listen for form completion
+    form.addEventListener('submit', submitProjectForm);
 
-    titleInput.name = "title";
-    titleInput.type = "text";
-    titleInput.required = true;
-    // TODO: Paste default text here: titleInput.value = ....;
-    projectForm.appendChild(titleInput);
+    // Add listeners to close window
+    dialogMask.addEventListener('click', closeProjectDialog);
+    window.addEventListener('keydown', checkCloseDialog);
+    dialog.querySelector('button.close').addEventListener('click', closeProjectDialog);
 
-    submitButton.type = "submit";
-    submitButton.value = "Save";
-    projectForm.appendChild(submitButton);
-
-    projectForm.addEventListener('submit', () => {
-      console.log('form submitted!');
-      console.log(e.target);
-      e.preventDefault();
-    });
+    dialog.querySelector('input').focus();
   }
 
-  const closeProjectForm = function() {
-    const formContainer = document.getElementById('form-container');
-    if (formContainer) formContainer.parentElement.removeChild(formContainer);
+  function submitProjectForm(e) {
+    console.log('form submitted!');
+    PubSub.publish(CREATE_PROJECT, {title: e.target.elements['project-title'].value});
+    e.preventDefault(); // stay on same page
+    closeProjectDialog();
+  }
+
+  function checkCloseDialog(e) {
+    if (e.keyCode === 27) closeProjectDialog();
+  }
+
+  function closeProjectDialog() {
+    // selector setup
+    const dialog = document.getElementById('project-form-container');
+    const dialogMask = dialog.querySelector('div.dialog-mask');
+    const form = document.getElementById('project-form');
+
+    // Remove event listeners
+    dialogMask.removeEventListener('click', closeProjectDialog);
+    window.removeEventListener('keydown', checkCloseDialog);
+    dialog.querySelector('button.close').removeEventListener('click',
+      closeProjectDialog);
+    form.removeEventListener('submit', submitProjectForm);
+
+    dialog.classList.remove('opened');
+
+    // Return focus outside of the modal
+    previousActiveElement.focus();
   }
 
   PubSub.subscribe(SET_UP_PAGE, setUpPage);

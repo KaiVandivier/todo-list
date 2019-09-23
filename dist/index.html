@@ -9,24 +9,27 @@
       
     </div>
 
-    <dialog id="form-container" open>
-      <h3>Project</h3>
-      <form method="dialog" id="project-form">
-        <label for="title">Project Title: </label>
-        <input name="title" type="text" id="project-title" value="Default Project" required>
-        <input type="submit" value="Save">
-      </form>
-    </dialog>
+    <div id="project-form-container" class="dialog opened" role="dialog" aria-labelledby="dialog-title">
+      <div class="dialog-window">
+        <h3 id="dialog-title">Project</h3>
+        <form method="dialog" id="project-form">
+          <label for="title">Project Title: </label>
+          <input name="title" type="text" id="project-title" value="Default Project" required>
+          <input type="submit" value="Save">
+        </form>
+      </div>
+      <div class="dialog-mask"></div>
+    </div>
 
     <script>
+      const dialog = document.getElementById('project-form-container');
       const form = document.getElementById('project-form');
       form.addEventListener('submit', (e) => {
         console.log('form submitted!');
         console.log(e.target);
         e.preventDefault();
-        console.log(e.target.parentNode);
-        console.log(e.target.parentElement);
-        e.target.parentNode.close();
+        dialog.classList.add('hidden');
+        dialog.classList.remove('opened');
       });
     </script>
     <script src="bundle.js"></script>

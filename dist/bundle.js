@@ -93,7 +93,7 @@
 /*! no static exports found */
 /***/ (function(module, exports, __webpack_require__) {
 
-eval("exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\")(false);\n// Module\nexports.push([module.i, \"\\n.hidden {\\n  display: none;\\n}\\n\\n\", \"\"]);\n\n\n//# sourceURL=webpack:///./src/styles.css?./node_modules/css-loader/dist/cjs.js");
+eval("exports = module.exports = __webpack_require__(/*! ../node_modules/css-loader/dist/runtime/api.js */ \"./node_modules/css-loader/dist/runtime/api.js\")(false);\n// Module\nexports.push([module.i, \"\\n.hidden {\\n  display: none;\\n}\\n\\n.dialog.opened {\\n  display: block;\\n}\\n\\n.dialog-window {\\n  display: inline-block;\\n  position: fixed;\\n  left: 50%;\\n  top: 50%;\\n  transform: translate(-50%, -50%);\\n  background-color: lightskyblue;\\n  z-index: 101;\\n  padding: 1.5em;\\n}\\n\\n.dialog-mask {\\n  position: fixed;\\n  top: 0;\\n  left: 0;\\n  width: 100%;\\n  height: 100%;\\n  overflow: hidden;\\n  z-index: 100;\\n  background-color: rgb(0,0,0);\\n  background-color: rgba(0,0,0,0.4);\\n}\", \"\"]);\n\n\n//# sourceURL=webpack:///./src/styles.css?./node_modules/css-loader/dist/cjs.js");
 
 /***/ }),
 

@@ -90,10 +90,7 @@ const Display = (function() {
     // "new todo" button
     const newTodoButton = document.createElement('button');
     newTodoButton.textContent = "New Todo";
-    newTodoButton.addEventListener('click', () => {
-      console.log('creating new todo');
-      // TODO: open "new todo" form
-    });
+    newTodoButton.addEventListener('click', displayNewTodoDialog); 
     projectDiv.appendChild(newTodoButton);
 
     // "edit project" button
@@ -169,7 +166,7 @@ const Display = (function() {
   };
 
 
-  // Dialog setup; 
+  // Project Dialog setup: 
   function displayNewProjectDialog() {
     // selector setup
     const dialog = document.getElementById('project-form-container');
@@ -187,7 +184,7 @@ const Display = (function() {
 
     // Add listeners to close window
     dialogMask.addEventListener('click', closeProjectDialog);
-    window.addEventListener('keydown', checkCloseDialog);
+    window.addEventListener('keydown', checkCloseProjectDialog);
     dialog.querySelector('button.close').addEventListener('click', closeProjectDialog);
 
     dialog.querySelector('input').focus();
@@ -200,7 +197,7 @@ const Display = (function() {
     closeProjectDialog();
   }
 
-  function checkCloseDialog(e) {
+  function checkCloseProjectDialog(e) {
     if (e.keyCode === 27) closeProjectDialog();
   }
 
@@ -212,10 +209,68 @@ const Display = (function() {
 
     // Remove event listeners
     dialogMask.removeEventListener('click', closeProjectDialog);
-    window.removeEventListener('keydown', checkCloseDialog);
+    window.removeEventListener('keydown', checkCloseProjectDialog);
     dialog.querySelector('button.close').removeEventListener('click',
       closeProjectDialog);
     form.removeEventListener('submit', submitProjectForm);
+
+    dialog.classList.remove('opened');
+
+    // Return focus outside of the modal
+    previousActiveElement.focus();
+  }
+
+  // Todo Dialog setup:
+  function displayNewTodoDialog() {
+    // selector setup
+    const dialog = document.getElementById('todo-form-container');
+    const dialogMask = dialog.querySelector('div.dialog-mask');
+    const form = dialog.querySelector('form#todo-form');
+
+    // Save active element
+    previousActiveElement = document.activeElement;
+
+    // Show the dialog
+    dialog.classList.add('opened');
+
+    // Listen for form completion
+    form.addEventListener('submit', submitTodoForm);
+
+    // Add listeners to close window
+    dialogMask.addEventListener('click', closeTodoDialog);
+    window.addEventListener('keydown', checkCloseTodoDialog);
+    dialog.querySelector('button.close').addEventListener('click', closeTodoDialog);
+
+    dialog.querySelector('input').focus();
+  }
+
+  function submitTodoForm(e) {
+    console.log('form submitted!');
+    const elements = e.target.elements;
+    const properties = ['title', 'description', 'priority', 'dueDate'];
+    const info = {};
+    properties.forEach((p) => info[p] = elements[p].value);
+    PubSub.publish(CREATE_TODO, info);
+    e.preventDefault(); // stay on same page
+    closeTodoDialog();
+  }
+
+  function checkCloseTodoDialog(e) {
+    if (e.keyCode === 27) closeTodoDialog();
+  }
+
+  function closeTodoDialog() {
+    // selector setup
+    const dialog = document.getElementById('todo-form-container');
+    const dialogMask = dialog.querySelector('div.dialog-mask');
+    const form = dialog.querySelector('form#todo-form');
+
+    // Remove event listeners
+    dialogMask.removeEventListener('click', closeTodoDialog);
+    window.removeEventListener('keydown', checkCloseTodoDialog);
+    dialog.querySelector('button.close').removeEventListener('click',
+      closeTodoDialog);
+    form.removeEventListener('submit', submitTodoForm);
 
     dialog.classList.remove('opened');
 

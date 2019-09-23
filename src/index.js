@@ -46,6 +46,7 @@ const Application = (function() {
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.push(newTodo);
+    PubSub.publish(RENDER_PROJECT, activeProject);
     getNextAction();
   };
 
@@ -54,6 +55,7 @@ const Application = (function() {
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.splice(index, 1, newTodo)
+    // PubSub.publish(RENDER_PROJECT, activeProject);
     getNextAction();
   };
 

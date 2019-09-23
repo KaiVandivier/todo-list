@@ -42,12 +42,11 @@ const Application = (function() {
 
   /* Todo logic -- working */
   const createTodo = function(msg, { title, description, dueDate, priority }) { //working
-    // This happens on form completion
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.push(newTodo);
     PubSub.publish(RENDER_PROJECT, activeProject);
-    getNextAction();
+    // getNextAction();
   };
 
   // edit
@@ -55,7 +54,7 @@ const Application = (function() {
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.splice(index, 1, newTodo)
-    // PubSub.publish(RENDER_PROJECT, activeProject);
+    PubSub.publish(RENDER_PROJECT, activeProject);
     getNextAction();
   };
 
@@ -63,6 +62,7 @@ const Application = (function() {
   const deleteTodo = function(msg, { index }) {
     console.log(msg);
     activeProject.todoList.splice(index, 1);
+    PubSub.publish(RENDER_PROJECT, activeProject);
     getNextAction();
   };
 

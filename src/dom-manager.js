@@ -119,14 +119,14 @@ const Display = (function() {
     const todoUl = document.createElement('ul');
     projectDiv.appendChild(todoUl);
     // ... and populate the list
-    project.todoList.forEach((todo) => {
-      renderTodo(todoUl, todo);
+    project.todoList.forEach((todo, index) => {
+      renderTodo(todoUl, todo, index);
     });
   };
 
-  const renderTodo = function(todoUl, todo) {
+  const renderTodo = function(todoUl, todo, index) {
     const todoLi = document.createElement('li');
-    // todoLi.setAttribute('data-index', "indexOf(todo)");
+    todoLi.setAttribute('data-index', index);
     todoUl.appendChild(todoLi);
 
     // 'Mark complete' button
@@ -135,6 +135,7 @@ const Display = (function() {
     todoLi.appendChild(completeButton);
     completeButton.addEventListener('click', () => {
       console.log('boop! complete.'); // TODO
+      // TodoLi.classList.add('complete');
     })
     
     // TODO: Priority indicator
@@ -161,7 +162,7 @@ const Display = (function() {
     todoLi.appendChild(deleteButton);
     deleteButton.addEventListener('click', () => {
       console.log('boop! I\'m a delete button'); // TODO
-      // PubSub.publish(DELETE_TODO, {index?})
+      PubSub.publish(DELETE_TODO, {index});
     });
   };
 

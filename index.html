@@ -9,12 +9,13 @@
       <!-- To be populated using JS -->
     </div>
 
-    <div id="project-form-container" class="dialog hidden" role="dialog" aria-labelledby="dialog-title">
+    <div id="project-form-container" class="dialog hidden" role="dialog" aria-labelledby="project-dialog-title">
       <div class="dialog-window">
-        <h3 id="dialog-title">Project</h3>
+        <h3 id="project-dialog-title">Project</h3>
         <form method="dialog" id="project-form">
           <label for="project-title">Project Title: </label>
           <input name="project-title" type="text" id="project-title" value="Default Project" required>
+
           <input type="submit" value="Save">
         </form>
         <button class="close">Close</button>
@@ -22,26 +23,28 @@
       <div class="dialog-mask"></div>
     </div>
 
-    <div id="todo-form-container" class="dialog hidden" role="dialog" aria-labelledby="dialog-title">
-        <div class="dialog-window">
-          <h3 id="dialog-title">Todo</h3>
-          <form method="dialog" id="todo-form">
-            <!-- Uh oh, duplicate "title" names -->
-            <label for="todo-title">Title: </label>
-            <input name="todo-title" type="text" id="todo-title" value="New Todo" required>
+    <div id="todo-form-container" class="dialog hidden" role="dialog" aria-labelledby="todo-dialog-title">
+      <div class="dialog-window">
+        <h3 id="todo-dialog-title">Todo</h3>
+        <form method="dialog" id="todo-form">
+          <label for="title">Title: </label>
+          <input name="title" type="text" id="todo-title" value="New Todo" required>
 
-            <label for="todo-description">Description: </label>
-            <input name="todo-description" type="text" id="todo-description">
+          <label for="description">Description: </label>
+          <input name="description" type="text" id="todo-description">
 
-            <label for="todo-priority">Priority: </label>
-            <input name="todo-priority" type="text">
+          <label for="priority">Priority: </label>
+          <input name="priority" type="text">
 
-            <input type="submit" value="Save">            
-          </form>
-          <button class="close">Close</button>
-        </div>
-        <div class="dialog-mask"></div>
+          <label for="dueDate">Due Date: </label>
+          <input name="dueDate" type="text">
+
+          <input type="submit" value="Save">            
+        </form>
+        <button class="close">Close</button>
       </div>
+      <div class="dialog-mask"></div>
+    </div>
 
     <script src="bundle.js"></script>
   </body>

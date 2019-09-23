@@ -9,7 +9,8 @@
       
     </div>
 
-    <div id="project-form-container" class="dialog opened" role="dialog" aria-labelledby="dialog-title">
+    <button id="open-dialog">Open Dialog</button>
+    <div id="project-form-container" class="dialog hidden" role="dialog" aria-labelledby="dialog-title">
       <div class="dialog-window">
         <h3 id="dialog-title">Project</h3>
         <form method="dialog" id="project-form">
@@ -23,14 +24,52 @@
 
     <script>
       const dialog = document.getElementById('project-form-container');
+      const dialogWindow = dialog.querySelector('div.dialog-window');
+      const dialogMask = dialog.querySelector('div.dialog-mask');
       const form = document.getElementById('project-form');
-      form.addEventListener('submit', (e) => {
+      let previousActiveElement = null;
+
+      const openDialogBtn = document.getElementById('open-dialog');
+      openDialogBtn.addEventListener('click', openDialog);
+
+
+      function openDialog() {
+        // Save active elemtn
+        previousActiveElement = document.activeElement;
+
+        // Show the dialog
+        dialog.classList.add('opened');
+
+        // Listen for form completion
+        form.addEventListener('submit', submitForm);
+
+        // Add listeners to close window
+        dialogMask.addEventListener('click', closeDialog);
+        window.addEventListener('keydown', checkCloseDialog);
+        // TODO: Close button
+      }
+
+      function submitForm(e) {
         console.log('form submitted!');
-        console.log(e.target);
         e.preventDefault();
-        dialog.classList.add('hidden');
+        closeDialog();
+      }
+
+      function checkCloseDialog(e) {
+        if (e.keyCode === 27) closeDialog();
+      }
+
+      function closeDialog() {
+        // Remove event listeners
+        dialogMask.removeEventListener('click', closeDialog);
+        window.removeEventListener('keydown', checkCloseDialog);
+        form.removeEventListener('submit', submitForm);
+
         dialog.classList.remove('opened');
-      });
+
+        // Return focus outside of the modal
+        previousActiveElement.focus();
+      }
     </script>
     <script src="bundle.js"></script>
   </body>

@@ -50,9 +50,9 @@ const Display = (function() {
   const renderProjectList = function(msg, projectList) {
     console.log(msg);
     // clear project list
-    projectListUl.childNodes.forEach((child) => {
-      projectListUl.removeChild(child);
-    });
+    while (projectListUl.firstChild) {
+      projectListUl.removeChild(projectListUl.firstChild);
+    }
 
     // write a new one
     projectList.forEach((project, index) => {
@@ -71,7 +71,9 @@ const Display = (function() {
   const renderProject = function(msg, project) {
     console.log(msg);
 
-    // // clear project div ...
+    // TODO: If no projects, write a message to make a new one
+
+    // clear project div ...
     while (projectDiv.firstChild) {
       projectDiv.removeChild(projectDiv.firstChild);
     };
@@ -107,7 +109,9 @@ const Display = (function() {
       console.log('deleting project');
       // TODO: Get project index
       // Maybe e.target['data-index']
-      // TODO: PubSub.publish(DELETE_PROJECT, {index})
+      // maybe publish data = project; del.proj. function
+      // uses .findIndex() to get object
+      PubSub.publish(DELETE_PROJECT, project)
     });
     projectDiv.appendChild(deleteProjectButton);
 

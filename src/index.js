@@ -93,10 +93,14 @@ const Application = (function() {
   };
 
   // delete/complete
-  const deleteProject = function(msg, { index }) {
+  const deleteProject = function(msg, project) {
     console.log(msg);
+    if (project === activeProject) PubSub.publish(SWITCH_PROJECT, 0);
+    const index = projectList.findIndex((proj) => {
+      return proj === project;
+    });
     projectList.splice(index, 1);
-    // getNextAction();
+    PubSub.publish(RENDER_PROJECT_LIST, projectList);
   };
 
   let token3 = PubSub.subscribe(CREATE_PROJECT, createProject);

@@ -133,10 +133,12 @@ const Display = (function() {
     const completeButton = document.createElement('button');
     completeButton.textContent = 'Mark Complete';
     todoLi.appendChild(completeButton);
-    completeButton.addEventListener('click', () => {
-      console.log('boop! complete.'); // TODO
-      // TodoLi.classList.add('complete');
-    })
+    completeButton.addEventListener('click', toggleTodoComplete);
+
+    function toggleTodoComplete(e) {
+      const todoSpan = e.target.parentElement.querySelector('span');
+      todoSpan.classList.toggle('complete');
+    }
     
     // TODO: Priority indicator
     // const priorityButton = document.createElement('button');
@@ -147,7 +149,7 @@ const Display = (function() {
     `due ${todo.dueDate}. Priority ${todo.priority}`;
     todoLi.appendChild(textSpan);
 
-    // draw edit button (pencil icon)
+    // draw edit button (todo: pencil icon)
     const editButton = document.createElement('button');
     editButton.textContent = 'Edit Todo';
     todoLi.appendChild(editButton);
@@ -161,7 +163,6 @@ const Display = (function() {
     deleteButton.textContent = 'Delete Todo';
     todoLi.appendChild(deleteButton);
     deleteButton.addEventListener('click', () => {
-      console.log('boop! I\'m a delete button'); // TODO
       PubSub.publish(DELETE_TODO, {index});
     });
   };

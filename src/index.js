@@ -83,9 +83,8 @@ const Application = (function() {
     console.log(msg);
     const newProject = project(title);
     projectList.push(newProject); 
-    activeProject = newProject;
+    switchProject(SWITCH_PROJECT, (projectList.length-1));
     PubSub.publish(RENDER_PROJECT_LIST, projectList);
-    // getNextAction();
   };
 
   // edit

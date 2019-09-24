@@ -29,7 +29,9 @@ const Display = (function() {
   // New Project Button
   const newProjectButton = document.createElement('button');
   newProjectButton.textContent = "New Project";
-  newProjectButton.addEventListener('click', displayNewProjectDialog);
+  newProjectButton.addEventListener('click', () => {
+    displayProjectDialog(CREATE_PROJECT, {});
+  });
   projectListDiv.appendChild(newProjectButton);
   // Project List Ul (to be populated by "render ... " below)
   const projectListUl = document.createElement('ul');
@@ -59,8 +61,6 @@ const Display = (function() {
       projectLi.setAttribute('data-index', index);
       projectListUl.appendChild(projectLi);
       projectLi.addEventListener('click', (e) => {
-        console.log('switching to project:');
-        console.log(e.target);
         PubSub.publish(SWITCH_PROJECT, e.target.getAttribute('data-index'));
       })
     });
@@ -72,14 +72,14 @@ const Display = (function() {
     // clear project div ...
     while (projectDiv.firstChild) {
       projectDiv.removeChild(projectDiv.firstChild);
-    };
-    // ... and write a new one
+    }; // ... to write a new one
 
-    // TODO: If no projects, write a message to make a new one
     try {
       let test = project.title;
     } catch (e) {
       console.log('No projects');
+      // TODO: If no projects, write a message to make a new one
+      return;
     }
 
     // title
@@ -90,7 +90,7 @@ const Display = (function() {
     // "new todo" button
     const newTodoButton = document.createElement('button');
     newTodoButton.textContent = "New Todo";
-    newTodoButton.addEventListener('click', displayNewTodoDialog); 
+    newTodoButton.addEventListener('click', displayTodoDialog); 
     projectDiv.appendChild(newTodoButton);
 
     // "edit project" button
@@ -99,6 +99,9 @@ const Display = (function() {
     editProjectButton.addEventListener('click', () => {
       console.log('editing project');
       // TODO: open "edit project" form (same as "new proj", kinda)
+      displayProjectDialog();
+      // PubSub.publish(FETCH_PROJECT_INFO, project); OR
+      // loadProjectInfo(project);
     });
     projectDiv.appendChild(editProjectButton);
 
@@ -106,11 +109,6 @@ const Display = (function() {
     const deleteProjectButton = document.createElement('button');
     deleteProjectButton.textContent = "Delete Project";
     deleteProjectButton.addEventListener('click', (e) => {
-      console.log('deleting project');
-      // TODO: Get project index
-      // Maybe e.target['data-index']
-      // maybe publish data = project; del.proj. function
-      // uses .findIndex() to get object
       PubSub.publish(DELETE_PROJECT, project)
     });
     projectDiv.appendChild(deleteProjectButton);
@@ -169,7 +167,10 @@ const Display = (function() {
 
 
   // Project Dialog setup: 
-  function displayNewProjectDialog() {
+  function displayProjectDialog(method, data) { 
+    // possible args: method, data
+    // method: edit or create. data: oldProject
+    
     // selector setup
     const dialog = document.getElementById('project-form-container');
     const dialogMask = dialog.querySelector('div.dialog-mask');
@@ -180,9 +181,18 @@ const Display = (function() {
 
     // Show the dialog
     dialog.classList.add('opened');
+    
+    // If "New project" (method === CREATE_PROJECT), load default value
+    if (method === CREATE_PROJECT) {
+      form.elements.title.value = "New Project"; 
+    } else if (method === EDIT_PROJECT) {
+      /* form.elements.title.value = data.oldProject.title; */
+    }
 
     // Listen for form completion
-    form.addEventListener('submit', submitProjectForm);
+    // Test: form.addEventListener('submit', submitProjectForm.bind({test: 'test successful!'}));
+    form.addEventListener('submit', submitProjectForm.bind({method, data}));
+
 
     // Add listeners to close window
     dialogMask.addEventListener('click', closeProjectDialog);
@@ -194,7 +204,10 @@ const Display = (function() {
 
   function submitProjectForm(e) {
     console.log('form submitted!');
-    PubSub.publish(CREATE_PROJECT, {title: e.target.elements['project-title'].value});
+    // console.log(this.test);
+    // PubSub.publish(CREATE_PROJECT, {title: e.target.elements.title.value});
+    const newData = Object.assign(this.data, {title: e.target.elements.title.value});
+    PubSub.publish(this.method, newData)
     e.preventDefault(); // stay on same page
     closeProjectDialog();
   }
@@ -223,7 +236,7 @@ const Display = (function() {
   }
 
   // Todo Dialog setup:
-  function displayNewTodoDialog() {
+  function displayTodoDialog() {
     // selector setup
     const dialog = document.getElementById('todo-form-container');
     const dialogMask = dialog.querySelector('div.dialog-mask');

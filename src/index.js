@@ -66,18 +66,13 @@ const Application = (function() {
     getNextAction();
   };
 
-  const getNextAction = function() {
-    PubSub.publish(PRINT_LIST, activeProject.todoList);
-    // PubSub.publish(GET_ACTION); // TODO: Remove when DOM is online
-  }
-
   let token0 = PubSub.subscribe(CREATE_TODO, createTodo);
   let token1 = PubSub.subscribe(EDIT_TODO, editTodo);
   let token2 = PubSub.subscribe(DELETE_TODO, deleteTodo);
   /* End Todo logic */
 
 
-  /* Project Logic -- working */
+  /* Project Logic */
   // create 
   const createProject = function(msg, { title }) {
     console.log(msg);
@@ -89,10 +84,14 @@ const Application = (function() {
 
   // edit
   const editProject = function(msg, { index, title }) {
+    /* New args: {oldProject, newProject} (title?)
+    // const index = projectList.findIndex((project) => {
+      return project === oldProject;
+    });
+    */
     console.log(msg)
     const newProject = project(title);
     projectList.splice(index, 1, newProject)
-    // getNextAction();
   };
 
   // delete/complete
@@ -116,8 +115,11 @@ const Application = (function() {
     activeProject = projectList[index];
     PubSub.publish(RENDER_PROJECT, activeProject);
   }
-
   PubSub.subscribe(SWITCH_PROJECT, switchProject);
+
+  const fetchProjectInfo = function(msg, project) {
+    // Called by "edit project" button
+  }
  
   return {
     projectList, // for testing purposes

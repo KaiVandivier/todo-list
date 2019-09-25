@@ -144,7 +144,6 @@ const Display = (function() {
     todoLi.appendChild(editButton);
     editButton.addEventListener('click', () => {
       console.log('beep! editing todo.');
-      // TODO: open edit dialog
       displayTodoDialog(EDIT_TODO, {todo, index});
     });
 
@@ -242,7 +241,6 @@ const Display = (function() {
       form.elements.priority.value = "normal";
       form.elements.dueDate.value = "today";
     } else if (method === EDIT_TODO) {
-      // TODO: Is there a better name than 'oldTodo?'
       form.elements.title.value = data.todo.title;
       form.elements.description.value = data.todo.description;
       form.elements.priority.value = data.todo.priority;

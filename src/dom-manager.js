@@ -104,24 +104,38 @@ const Display = (function() {
     });
     projectDiv.appendChild(deleteProjectButton);
 
-    // create a list to populate with todos
-    const todoUl = document.createElement('ul');
-    projectDiv.appendChild(todoUl);
-    // ... and populate the list
+    // create a table to organize todos
+    const todoTable = document.createElement('table');
+    projectDiv.appendChild(todoTable);
+
+    const todoHead = document.createElement('thead');
+    todoTable.appendChild(todoHead);
+    const titles = ['Done', 'Priority', 'Title', 'Due Date', 'Edit', 'Delete']
+    titles.forEach((title) => {
+      const th = document.createElement('th');
+      th.scope = "col";
+      th.textContent = title;
+      todoHead.appendChild(th);
+    });
+
+    // create a table body to populate with todos
+    const todoBody = document.createElement('tbody');
+    todoTable.appendChild(todoBody);
     project.todoList.forEach((todo, index) => {
-      renderTodo(todoUl, todo, index);
+      renderTodo(todoBody, todo, index);
     });
   };
 
-  const renderTodo = function(todoUl, todo, index) {
-    const todoLi = document.createElement('li');
-    todoLi.setAttribute('data-index', index);
-    todoUl.appendChild(todoLi);
+  const renderTodo = function(/*todoUl,*/ todoBody, todo, index) {
+    const todoRow = document.createElement('tr');
+    todoBody.appendChild(todoRow)
 
     // 'Mark complete' button
+    const buttonCell = document.createElement('td');
+    todoRow.appendChild(buttonCell);
     const completeButton = document.createElement('button');
-    completeButton.textContent = 'Mark Complete';
-    todoLi.appendChild(completeButton);
+    completeButton.textContent = 'Done';
+    buttonCell.appendChild(completeButton);
     completeButton.addEventListener('click', toggleTodoComplete);
 
     function toggleTodoComplete(e) {
@@ -129,28 +143,42 @@ const Display = (function() {
       todoSpan.classList.toggle('complete');
     }
     
-    // TODO: Priority indicator
-    // const priorityButton = document.createElement('button');
+    // priority indicator
+    const priorityCell = document.createElement('td');
+    todoRow.appendChild(priorityCell);
+    const priorityText = document.createElement('span');
+    priorityText.textContent = todo.priority;
+    priorityCell.appendChild(priorityText);
 
-    // Todo info (TODO: Make into just title)
+    // Todo title
+    const titleCell = document.createElement('td');
+    todoRow.appendChild(titleCell);
     const textSpan = document.createElement('span');
-    textSpan.textContent = `  ${todo.title}: ${todo.description}, ` + 
-    `due ${todo.dueDate}. Priority ${todo.priority}  `;
-    todoLi.appendChild(textSpan);
+    textSpan.textContent = todo.title;
+    titleCell.appendChild(textSpan);
+
+    // due date
+    const dueDateCell = document.createElement('td');
+    todoRow.appendChild(dueDateCell);
+    dueDateCell.textContent = todo.dueDate;
 
     // draw edit button (todo: pencil icon)
+    const editCell = document.createElement('td');
+    todoRow.appendChild(editCell);
     const editButton = document.createElement('button');
     editButton.textContent = 'Edit';
-    todoLi.appendChild(editButton);
+    editCell.appendChild(editButton);
     editButton.addEventListener('click', () => {
       console.log('beep! editing todo.');
       displayTodoDialog(EDIT_TODO, {todo, index});
     });
 
     // draw delete button (trash icon)
+    const deleteCell = document.createElement('td');
+    todoRow.appendChild(deleteCell);
     const deleteButton = document.createElement('button');
     deleteButton.textContent = 'Delete';
-    todoLi.appendChild(deleteButton);
+    deleteCell.appendChild(deleteButton);
     deleteButton.addEventListener('click', () => {
       PubSub.publish(DELETE_TODO, {index});
     });

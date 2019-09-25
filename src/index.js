@@ -7,7 +7,6 @@ import {
   CREATE_PROJECT,
   EDIT_PROJECT,
   DELETE_PROJECT,
-  SET_UP_PAGE,
   RENDER_PROJECT_LIST,
   RENDER_PROJECT,
   SWITCH_PROJECT,
@@ -17,33 +16,13 @@ import project from './project.js';
 import Display from './dom-manager.js';
 
 
-//WIP
 const Application = (function() {
-
-  // todo: get project list from storage
-  const projectList = [];
-  if (localStorage.length > 0) projectList.push(...loadProjectList());
-
-  // todo: choose active project (currently a placeholder)
-  let activeProject = projectList[0] || project('');
-  const getActiveProject = () => {
-    return activeProject;
-  }
-  
-  if (projectList.length == 0) {
-    // make default project
-    // make it active
-  }; 
-
-  // TODO: Display Page
-
-
-  function saveProjectList() {
-    // TODO:
+  /* Storage logic */
+  const saveProjectList = function() {
     localStorage.setItem('projectList', JSON.stringify(projectList))
   }
 
-  function loadProjectList() {
+  const loadProjectList = function() {
     const storedString = localStorage.getItem('projectList'); 
     const storedList = JSON.parse(storedString);
     const newList = storedList.map((p) => {
@@ -55,64 +34,53 @@ const Application = (function() {
     })
     return newList;
   }
+  /* ... end storage logic */
 
 
-
-
-
-
-
-
-
-  /* Todo logic -- working */
+  /* Todo logic --  */
   const createTodo = function(msg, { title, description, dueDate, priority }) { //working
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.push(newTodo);
     PubSub.publish(RENDER_PROJECT, activeProject);
+    saveProjectList()
   };
 
-  // edit
   const editTodo = function(msg, { index, title, description, dueDate, priority }) {
     console.log(msg);
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.splice(index, 1, newTodo)
     PubSub.publish(RENDER_PROJECT, activeProject);
+    saveProjectList()
   };
 
-  // delete/complete
   const deleteTodo = function(msg, { index }) {
     console.log(msg);
     activeProject.todoList.splice(index, 1);
     PubSub.publish(RENDER_PROJECT, activeProject);
+    saveProjectList()
   };
-    // PubSub.publish(CREATE_TODO, info);
-
-  let token0 = PubSub.subscribe(CREATE_TODO, createTodo);
-  let token1 = PubSub.subscribe(EDIT_TODO, editTodo);
-  let token2 = PubSub.subscribe(DELETE_TODO, deleteTodo);
   /* End Todo logic */
 
 
   /* Project Logic */
-  // create 
   const createProject = function(msg, { title }) {
     console.log(msg);
     const newProject = project(title);
     projectList.push(newProject); 
     switchProject(SWITCH_PROJECT, (projectList.length-1));
     PubSub.publish(RENDER_PROJECT_LIST, projectList);
+    saveProjectList()
   };
 
-  // edit
   const editProject = function(msg, { title }) {
     console.log(msg)
     activeProject.title = title;
     PubSub.publish(RENDER_PROJECT_LIST, projectList);
     PubSub.publish(RENDER_PROJECT, activeProject);
+    saveProjectList()
   };
 
-  // delete/complete
   const deleteProject = function(msg, project) {
     console.log(msg);
     if (project === activeProject) PubSub.publish(SWITCH_PROJECT, 0);
@@ -121,52 +89,70 @@ const Application = (function() {
     });
     projectList.splice(index, 1);
     PubSub.publish(RENDER_PROJECT_LIST, projectList);
+    saveProjectList()
   };
-
-  let token3 = PubSub.subscribe(CREATE_PROJECT, createProject);
-  let token4 = PubSub.subscribe(EDIT_PROJECT, editProject);
-  let token5 = PubSub.subscribe(DELETE_PROJECT, deleteProject);
-  /* End Project Logic */
 
   const switchProject = function(msg, index) {
     console.log(msg);
     activeProject = projectList[index];
     PubSub.publish(RENDER_PROJECT, activeProject);
   }
-  PubSub.subscribe(SWITCH_PROJECT, switchProject);
+  /* End Project Logic */
+
+  // Subscriptions
+  let token0 = PubSub.subscribe(CREATE_TODO, createTodo);
+  let token1 = PubSub.subscribe(EDIT_TODO, editTodo);
+  let token2 = PubSub.subscribe(DELETE_TODO, deleteTodo);
+  let token3 = PubSub.subscribe(CREATE_PROJECT, createProject);
+  let token4 = PubSub.subscribe(EDIT_PROJECT, editProject);
+  let token5 = PubSub.subscribe(DELETE_PROJECT, deleteProject);
+  let token6 = PubSub.subscribe(SWITCH_PROJECT, switchProject);
+
+
+  // get project list from storage
+  const projectList = [];
+  if (localStorage.getItem('projectList')) {
+    projectList.push(...loadProjectList());
+  };
+
+  // choose active project
+  let activeProject = projectList[0] || null;
+  // const getActiveProject = () => { return activeProject }; // for unit tests
+  
+  // optionally load sample projects
+  if (projectList.length == 0 && confirm('Load sample projects?')) {
+    loadTestProjects(); 
+  } 
+
+  // display lists
+  PubSub.publish(RENDER_PROJECT_LIST, projectList);
+  PubSub.publish(RENDER_PROJECT, activeProject);
  
+  /*
   return {
     projectList, // for testing purposes
     activeProject,
     getActiveProject,
     saveProjectList,
     loadProjectList
-  }
+  } */
 
 })();
 
-// ----------- TESTING DOM MANAGER -------------
-// Working, using timeout at bottom -- huh
 
-const testProj1 = project('Test Project 1');
-const testProj2 = project('Test Project 2');
-PubSub.publish(CREATE_PROJECT, testProj1);
-PubSub.publish(CREATE_PROJECT, testProj2);
+function loadTestProjects() {
+  console.log('loading test projects');
 
-const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
-const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
-const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
+  const testProj1 = project('Test Project 1');
+  const testProj2 = project('Test Project 2');
+  PubSub.publish(CREATE_PROJECT, testProj1);
+  PubSub.publish(CREATE_PROJECT, testProj2);
 
-PubSub.publish(CREATE_TODO, testTodo);
-PubSub.publish(CREATE_TODO, testTodo1);
-PubSub.publish(CREATE_TODO, testTodo2);
+  const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
+  const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
+  const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical');
 
-// TESTING LOCAL STORAGE
-console.log(JSON.stringify(Application.projectList));
-setTimeout(() => {
-  console.log(Application.projectList);
-  console.log(JSON.stringify(Application.projectList));
-  Application.saveProjectList();
-  const testList = Application.loadProjectList();
-  console.log(testList);
-})
+  PubSub.publish(CREATE_TODO, testTodo);
+  PubSub.publish(CREATE_TODO, testTodo1);
+  PubSub.publish(CREATE_TODO, testTodo2);
+}

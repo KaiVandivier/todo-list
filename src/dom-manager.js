@@ -6,7 +6,6 @@ import {
   CREATE_PROJECT,
   EDIT_PROJECT,
   DELETE_PROJECT,
-  SET_UP_PAGE,
   RENDER_PROJECT_LIST,
   RENDER_PROJECT,
   SWITCH_PROJECT,
@@ -43,18 +42,13 @@ const Display = (function() {
   root.appendChild(projectDiv);
   projectDiv.id = 'project-div'
 
-  const setUpPage = function() {
-    // todo
-  };
-
   const renderProjectList = function(msg, projectList) {
     console.log(msg);
     // clear project list
     while (projectListUl.firstChild) {
       projectListUl.removeChild(projectListUl.firstChild);
-    }
+    } // ... to write a new one
 
-    // write a new one
     projectList.forEach((project, index) => {
       const projectLi = document.createElement('li');
       projectLi.textContent = project.title;
@@ -74,19 +68,16 @@ const Display = (function() {
       projectDiv.removeChild(projectDiv.firstChild);
     }; // ... to write a new one
 
-    // TODO:
-    try {
-      let test = project.title;
-    } catch (e) {
-      console.log('No projects');
-      // TODO: If no projects, write a message to make a new one
-      return;
-    }
-
     // title
     const titleHeader = document.createElement('h3');
-    titleHeader.textContent = project.title;
-    projectDiv.appendChild(titleHeader);
+    try { // handle "no active projects"
+      titleHeader.textContent = project.title;
+      projectDiv.appendChild(titleHeader);
+    } catch(e) {
+      titleHeader.textContent = "No active projects";
+      projectDiv.appendChild(titleHeader);
+      return;
+    }
 
     // "new todo" button
     const newTodoButton = document.createElement('button');
@@ -305,7 +296,6 @@ const Display = (function() {
     previousActiveElement.focus();
   }
 
-  PubSub.subscribe(SET_UP_PAGE, setUpPage);
   PubSub.subscribe(RENDER_PROJECT_LIST, renderProjectList);
   PubSub.subscribe(RENDER_PROJECT, renderProject);
 })();

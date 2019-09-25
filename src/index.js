@@ -15,7 +15,6 @@ import {
   SWITCH_PROJECT,
 } from './event-types.js';
 import todo from './todo.js';
-import TodoIO from './todo-io.js';
 import project from './project.js';
 import Display from './dom-manager.js';
 
@@ -35,10 +34,7 @@ const Application = (function() {
     // make it active
   }; 
 
-  // Display Page
-    // -Show project (display project)
-    // -Show each todo  
-
+  // TODO: Display Page
 
   /* Todo logic -- working */
   const createTodo = function(msg, { title, description, dueDate, priority }) { //working
@@ -62,6 +58,7 @@ const Application = (function() {
     activeProject.todoList.splice(index, 1);
     PubSub.publish(RENDER_PROJECT, activeProject);
   };
+    // PubSub.publish(CREATE_TODO, info);
 
   let token0 = PubSub.subscribe(CREATE_TODO, createTodo);
   let token1 = PubSub.subscribe(EDIT_TODO, editTodo);
@@ -118,146 +115,25 @@ const Application = (function() {
 
 })();
 
-
-
-
-// ----------- TESTING PROTOTYPAL INHERITANCE -------
-
-/*
-const project = function() {
-  const todoList = [];
-  return Object.assign(Object.create(Object.getPrototypeOf(TodoController)), {todoList});
-}
-
-const TodoController = (function() {
-  const proto = {
-    add: function() {
-      console.log(this);
-      this.todoList.push('hi');
-    },
-    test: () => console.log('test successful!'),
-  }
-  return Object.create(proto);
-})();
-
-
-
-TodoController.test()
-console.log('TodoController prototype:');
-console.log(Object.getPrototypeOf(TodoController));
-
-console.log('this:');
-console.log(this)
-
-
-
-const myProj = project();
-console.log('myProj prototype:');
-
-console.log(Object.getPrototypeOf(myProj));
-
-console.log('testing myProj.test():');
-myProj.test();
-
-console.log('Testing myProj.todoList and add():');
-console.log(myProj.todoList);
-console.log('adding:');
-myProj.add(); //works!
-//myProj.add.call(myProj) worked with 'this'!
-console.log(myProj.todoList);
-*/
-
-
-
-// --------- TESTING TODOS ---------------
-
-/*
-const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
-const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
-const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
-
-// CREATE
-PubSub.publish(CREATE_TODO, testTodo);
-PubSub.publish(CREATE_TODO, testTodo1);
-PubSub.publish(CREATE_TODO, testTodo2);
-
-// EDIT
-const newTestTodo = todo('A', 'B', 'C', 'D');
-const editTest = Object.assign({index: 1}, newTestTodo)
-setTimeout(() => PubSub.publish(EDIT_TODO, editTest), 300);
-
-// DELETE
-setTimeout(() => PubSub.publish(DELETE_TODO, {index: 1}), 400);
-
-// GET_ACTION
-setTimeout(() => PubSub.publish(GET_ACTION), 500);
-*/
-
-
-// -------- TESTING PROJECTS ---------------
-
-/*
-// project objects
-const testProj1 = project('myProj');
-console.log('testProj1:');
-console.log(testProj1);
-const testProj2 = project('myProj1');
-
-// CREATE - working
-PubSub.publish(CREATE_PROJECT, testProj1);
-PubSub.publish(CREATE_PROJECT, testProj2);
-console.log('project list after two create calls:');
-console.log(Application.projectList);
-
-// EDIT -- working
-const editArgs1 = Object.assign(testProj1, {index: 1});
-setTimeout(() => {
-  PubSub.publish(EDIT_PROJECT, editArgs1);
-  console.log('project list after edit call:');
-  console.log(Application.projectList);
-}, 5000);
-
-
-// DELETE -- working
-setTimeout(() => {
-  PubSub.publish(DELETE_PROJECT, {index: 1});
-  console.log(Application.projectList);
-}, 10000);
-/**/
-
-
 // ----------- TESTING DOM MANAGER -------------
 // Working, using timeout at bottom -- huh
-// project objectsconsole
-const testProj1 = project('Test Project 1');
-console.log('testProj1:');
-console.log(testProj1);
-const testProj2 = project('Test Project 2');
 
-// CREATE - working
+const testProj1 = project('Test Project 1');
+const testProj2 = project('Test Project 2');
 PubSub.publish(CREATE_PROJECT, testProj1);
 PubSub.publish(CREATE_PROJECT, testProj2);
-console.log('project list after two create calls:');
-console.log(Application.projectList);
 
-// todo objects
 const testTodo = todo('Simona\'s birthday', 'Get her a present! :)', 'January 24', 'high');
 const testTodo1 = todo('Socialize', 'Get in touch with friends', 'this week', 'medium');
 const testTodo2 = todo('Synergize', 'Network', 'ASAP', 'critical')
 
-// CREATE
 PubSub.publish(CREATE_TODO, testTodo);
 PubSub.publish(CREATE_TODO, testTodo1);
 PubSub.publish(CREATE_TODO, testTodo2);
 
-
-
-// WRITE PROJECT LIST
+// WRITE PROJECT LIST AND PROJECT
 PubSub.publish(RENDER_PROJECT_LIST, Application.projectList);
-
 setTimeout(() => {
-  console.log('Active project:');
-  console.log(Application.getActiveProject());
   PubSub.publish(RENDER_PROJECT, Application.getActiveProject());
 });
 /**/

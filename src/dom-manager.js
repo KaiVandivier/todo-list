@@ -76,6 +76,7 @@ const Display = (function() {
       projectDiv.removeChild(projectDiv.firstChild);
     }; // ... to write a new one
 
+    // TODO:
     try {
       let test = project.title;
     } catch (e) {

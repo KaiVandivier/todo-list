@@ -55,7 +55,6 @@ const Application = (function() {
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.splice(index, 1, newTodo)
     PubSub.publish(RENDER_PROJECT, activeProject);
-    getNextAction();
   };
 
   // delete/complete
@@ -63,7 +62,6 @@ const Application = (function() {
     console.log(msg);
     activeProject.todoList.splice(index, 1);
     PubSub.publish(RENDER_PROJECT, activeProject);
-    getNextAction();
   };
 
   let token0 = PubSub.subscribe(CREATE_TODO, createTodo);
@@ -83,15 +81,11 @@ const Application = (function() {
   };
 
   // edit
-  const editProject = function(msg, { index, title }) {
-    /* New args: {oldProject, newProject} (title?)
-    // const index = projectList.findIndex((project) => {
-      return project === oldProject;
-    });
-    */
+  const editProject = function(msg, { title }) {
     console.log(msg)
-    const newProject = project(title);
-    projectList.splice(index, 1, newProject)
+    activeProject.title = title;
+    PubSub.publish(RENDER_PROJECT_LIST, projectList);
+    PubSub.publish(RENDER_PROJECT, activeProject);
   };
 
   // delete/complete

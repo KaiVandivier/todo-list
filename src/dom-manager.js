@@ -16,6 +16,7 @@ import {
 
 const Display = (function() {
   const root = document.getElementById('root');
+  let submitProjectFormMethod = null;
   let previousActiveElement = null;
 
   // Project List Div (container)
@@ -98,10 +99,7 @@ const Display = (function() {
     editProjectButton.textContent = "Edit Project";
     editProjectButton.addEventListener('click', () => {
       console.log('editing project');
-      // TODO: open "edit project" form (same as "new proj", kinda)
-      displayProjectDialog();
-      // PubSub.publish(FETCH_PROJECT_INFO, project); OR
-      // loadProjectInfo(project);
+      displayProjectDialog(EDIT_PROJECT, {oldProject: project});
     });
     projectDiv.appendChild(editProjectButton);
 
@@ -186,12 +184,12 @@ const Display = (function() {
     if (method === CREATE_PROJECT) {
       form.elements.title.value = "New Project"; 
     } else if (method === EDIT_PROJECT) {
-      /* form.elements.title.value = data.oldProject.title; */
+      form.elements.title.value = data.oldProject.title;
     }
 
     // Listen for form completion
-    // Test: form.addEventListener('submit', submitProjectForm.bind({test: 'test successful!'}));
-    form.addEventListener('submit', submitProjectForm.bind({method, data}));
+    submitProjectFormMethod = submitProjectForm.bind({method, data});
+    form.addEventListener('submit', submitProjectFormMethod);
 
 
     // Add listeners to close window
@@ -206,7 +204,7 @@ const Display = (function() {
     console.log('form submitted!');
     // console.log(this.test);
     // PubSub.publish(CREATE_PROJECT, {title: e.target.elements.title.value});
-    const newData = Object.assign(this.data, {title: e.target.elements.title.value});
+    const newData = Object.assign(this.data, {title: e.target.elements.title.value}); // handles either "edit" or "new"
     PubSub.publish(this.method, newData)
     e.preventDefault(); // stay on same page
     closeProjectDialog();
@@ -227,7 +225,7 @@ const Display = (function() {
     window.removeEventListener('keydown', checkCloseProjectDialog);
     dialog.querySelector('button.close').removeEventListener('click',
       closeProjectDialog);
-    form.removeEventListener('submit', submitProjectForm);
+    form.removeEventListener('submit', submitProjectFormMethod);
 
     dialog.classList.remove('opened');
 

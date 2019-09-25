@@ -1,4 +1,5 @@
 
+/* Dialog styles */
 .hidden {
   display: none;
 }
@@ -30,6 +31,14 @@
   background-color: rgba(0,0,0,0.4);
 }
 
+
+/* Project list styles */
+#project-list-ul li:hover {
+  background-color: lightgrey;  
+}
+
+
+/* Project and Todo list styles */
 span.complete {
   text-decoration: line-through;
 }

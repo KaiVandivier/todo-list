@@ -140,7 +140,7 @@ const Display = (function() {
 
     // draw edit button (todo: pencil icon)
     const editButton = document.createElement('button');
-    editButton.textContent = 'Edit Todo';
+    editButton.textContent = 'Edit';
     todoLi.appendChild(editButton);
     editButton.addEventListener('click', () => {
       console.log('beep! editing todo.');
@@ -149,7 +149,7 @@ const Display = (function() {
 
     // draw delete button (trash icon)
     const deleteButton = document.createElement('button');
-    deleteButton.textContent = 'Delete Todo';
+    deleteButton.textContent = 'Delete';
     todoLi.appendChild(deleteButton);
     deleteButton.addEventListener('click', () => {
       PubSub.publish(DELETE_TODO, {index});

@@ -27,7 +27,7 @@ const Application = (function() {
     const storedList = JSON.parse(storedString);
     const newList = storedList.map((p) => {
       const newTodoList = p.todoList.map((t) => {
-        return todo(t.title, t.description, t.priority, t.dueDate);
+        return todo(t.title, t.description, t.dueDate, t.priority);
       });
       const newProject = project(p.title, newTodoList);
       return newProject;

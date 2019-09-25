@@ -1,8 +1,6 @@
 import './styles.css';
 import PubSub from 'pubsub-js';
 import {
-  PRINT_LIST,
-  GET_ACTION,
   CREATE_TODO,
   EDIT_TODO,
   DELETE_TODO,
@@ -21,10 +19,13 @@ import Display from './dom-manager.js';
 
 //WIP
 const Application = (function() {
+
   // todo: get project list from storage
   const projectList = [];
+  if (localStorage.length > 0) projectList.push(...loadProjectList());
+
   // todo: choose active project (currently a placeholder)
-  let activeProject = project('');
+  let activeProject = projectList[0] || project('');
   const getActiveProject = () => {
     return activeProject;
   }
@@ -35,6 +36,33 @@ const Application = (function() {
   }; 
 
   // TODO: Display Page
+
+
+  function saveProjectList() {
+    // TODO:
+    localStorage.setItem('projectList', JSON.stringify(projectList))
+  }
+
+  function loadProjectList() {
+    const storedString = localStorage.getItem('projectList'); 
+    const storedList = JSON.parse(storedString);
+    const newList = storedList.map((p) => {
+      const newTodoList = p.todoList.map((t) => {
+        return todo(t.title, t.description, t.priority, t.dueDate);
+      });
+      const newProject = project(p.title, newTodoList);
+      return newProject;
+    })
+    return newList;
+  }
+
+
+
+
+
+
+
+
 
   /* Todo logic -- working */
   const createTodo = function(msg, { title, description, dueDate, priority }) { //working
@@ -111,6 +139,8 @@ const Application = (function() {
     projectList, // for testing purposes
     activeProject,
     getActiveProject,
+    saveProjectList,
+    loadProjectList
   }
 
 })();
@@ -131,9 +161,12 @@ PubSub.publish(CREATE_TODO, testTodo);
 PubSub.publish(CREATE_TODO, testTodo1);
 PubSub.publish(CREATE_TODO, testTodo2);
 
-// WRITE PROJECT LIST AND PROJECT
-PubSub.publish(RENDER_PROJECT_LIST, Application.projectList);
+// TESTING LOCAL STORAGE
+console.log(JSON.stringify(Application.projectList));
 setTimeout(() => {
-  PubSub.publish(RENDER_PROJECT, Application.getActiveProject());
-});
-/**/
+  console.log(Application.projectList);
+  console.log(JSON.stringify(Application.projectList));
+  Application.saveProjectList();
+  const testList = Application.loadProjectList();
+  console.log(testList);
+})

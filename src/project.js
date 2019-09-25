@@ -1,7 +1,7 @@
 // Make a project object
 
-const project = function(title) {
-  const todoList = [];
+const project = function(title, todoList) {
+  todoList = todoList || [];
   return {
     title,
     todoList

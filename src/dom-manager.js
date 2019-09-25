@@ -1,7 +1,5 @@
 import PubSub from 'pubsub-js';
 import {
-  PRINT_LIST,
-  GET_ACTION,
   CREATE_TODO,
   EDIT_TODO,
   DELETE_TODO,

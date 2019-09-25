@@ -46,7 +46,6 @@ const Application = (function() {
     const newTodo = todo(title, description, dueDate, priority);
     activeProject.todoList.push(newTodo);
     PubSub.publish(RENDER_PROJECT, activeProject);
-    // getNextAction();
   };
 
   // edit
@@ -110,10 +109,6 @@ const Application = (function() {
     PubSub.publish(RENDER_PROJECT, activeProject);
   }
   PubSub.subscribe(SWITCH_PROJECT, switchProject);
-
-  const fetchProjectInfo = function(msg, project) {
-    // Called by "edit project" button
-  }
  
   return {
     projectList, // for testing purposes

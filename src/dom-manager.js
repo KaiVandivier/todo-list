@@ -17,6 +17,7 @@ import {
 const Display = (function() {
   const root = document.getElementById('root');
   let submitProjectFormMethod = null;
+  let submitTodoFormMethod = null;
   let previousActiveElement = null;
 
   // Project List Div (container)
@@ -91,7 +92,9 @@ const Display = (function() {
     // "new todo" button
     const newTodoButton = document.createElement('button');
     newTodoButton.textContent = "New Todo";
-    newTodoButton.addEventListener('click', displayTodoDialog); 
+    newTodoButton.addEventListener('click', () => {
+      displayTodoDialog(CREATE_TODO, {});
+    }); 
     projectDiv.appendChild(newTodoButton);
 
     // "edit project" button
@@ -99,7 +102,7 @@ const Display = (function() {
     editProjectButton.textContent = "Edit Project";
     editProjectButton.addEventListener('click', () => {
       console.log('editing project');
-      displayProjectDialog(EDIT_PROJECT, {oldProject: project});
+      displayProjectDialog(EDIT_PROJECT, {project});
     });
     projectDiv.appendChild(editProjectButton);
 
@@ -141,8 +144,8 @@ const Display = (function() {
 
     // Todo info (TODO: Make into just title)
     const textSpan = document.createElement('span');
-    textSpan.textContent = `${todo.title}: ${todo.description}, ` + 
-    `due ${todo.dueDate}. Priority ${todo.priority}`;
+    textSpan.textContent = `  ${todo.title}: ${todo.description}, ` + 
+    `due ${todo.dueDate}. Priority ${todo.priority}  `;
     todoLi.appendChild(textSpan);
 
     // draw edit button (todo: pencil icon)
@@ -150,9 +153,10 @@ const Display = (function() {
     editButton.textContent = 'Edit Todo';
     todoLi.appendChild(editButton);
     editButton.addEventListener('click', () => {
-      console.log('beep! editing todo.'); // TODO
+      console.log('beep! editing todo.');
       // TODO: open edit dialog
-    })
+      displayTodoDialog(EDIT_TODO, {todo, index});
+    });
 
     // draw delete button (trash icon)
     const deleteButton = document.createElement('button');
@@ -166,9 +170,6 @@ const Display = (function() {
 
   // Project Dialog setup: 
   function displayProjectDialog(method, data) { 
-    // possible args: method, data
-    // method: edit or create. data: oldProject
-    
     // selector setup
     const dialog = document.getElementById('project-form-container');
     const dialogMask = dialog.querySelector('div.dialog-mask');
@@ -180,30 +181,28 @@ const Display = (function() {
     // Show the dialog
     dialog.classList.add('opened');
     
-    // If "New project" (method === CREATE_PROJECT), load default value
+    // Populate fields appropriately for "new" or "edit"
     if (method === CREATE_PROJECT) {
       form.elements.title.value = "New Project"; 
     } else if (method === EDIT_PROJECT) {
-      form.elements.title.value = data.oldProject.title;
+      form.elements.title.value = data.project.title;
     }
 
     // Listen for form completion
     submitProjectFormMethod = submitProjectForm.bind({method, data});
     form.addEventListener('submit', submitProjectFormMethod);
 
-
     // Add listeners to close window
     dialogMask.addEventListener('click', closeProjectDialog);
     window.addEventListener('keydown', checkCloseProjectDialog);
     dialog.querySelector('button.close').addEventListener('click', closeProjectDialog);
 
+    // Focus the dialog
     dialog.querySelector('input').focus();
   }
 
   function submitProjectForm(e) {
     console.log('form submitted!');
-    // console.log(this.test);
-    // PubSub.publish(CREATE_PROJECT, {title: e.target.elements.title.value});
     const newData = Object.assign(this.data, {title: e.target.elements.title.value}); // handles either "edit" or "new"
     PubSub.publish(this.method, newData)
     e.preventDefault(); // stay on same page
@@ -234,7 +233,7 @@ const Display = (function() {
   }
 
   // Todo Dialog setup:
-  function displayTodoDialog() {
+  function displayTodoDialog(method, data) {    
     // selector setup
     const dialog = document.getElementById('todo-form-container');
     const dialogMask = dialog.querySelector('div.dialog-mask');
@@ -246,8 +245,23 @@ const Display = (function() {
     // Show the dialog
     dialog.classList.add('opened');
 
+    // Populate fields appropriately for "new" or "edit"
+    if (method === CREATE_TODO) {
+      form.elements.title.value = "New Todo"; 
+      form.elements.description.value = "";
+      form.elements.priority.value = "normal";
+      form.elements.dueDate.value = "today";
+    } else if (method === EDIT_TODO) {
+      // TODO: Is there a better name than 'oldTodo?'
+      form.elements.title.value = data.todo.title;
+      form.elements.description.value = data.todo.description;
+      form.elements.priority.value = data.todo.priority;
+      form.elements.dueDate.value = data.todo.dueDate;
+    }
+
     // Listen for form completion
-    form.addEventListener('submit', submitTodoForm);
+    submitTodoFormMethod = submitTodoForm.bind({method, data});
+    form.addEventListener('submit', submitTodoFormMethod);
 
     // Add listeners to close window
     dialogMask.addEventListener('click', closeTodoDialog);
@@ -263,7 +277,8 @@ const Display = (function() {
     const properties = ['title', 'description', 'priority', 'dueDate'];
     const info = {};
     properties.forEach((p) => info[p] = elements[p].value);
-    PubSub.publish(CREATE_TODO, info);
+    const newData = Object.assign(this.data, info)
+    PubSub.publish(this.method, newData);
     e.preventDefault(); // stay on same page
     closeTodoDialog();
   }
@@ -283,7 +298,7 @@ const Display = (function() {
     window.removeEventListener('keydown', checkCloseTodoDialog);
     dialog.querySelector('button.close').removeEventListener('click',
       closeTodoDialog);
-    form.removeEventListener('submit', submitTodoForm);
+    form.removeEventListener('submit', submitTodoFormMethod);
 
     dialog.classList.remove('opened');
 

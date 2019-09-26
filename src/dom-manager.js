@@ -22,16 +22,20 @@ const Display = (function() {
   projectListDiv.id = 'project-list-div';
   root.appendChild(projectListDiv);
   // Project List Header
-  const projectListHeader = document.createElement('h2');
-  projectListHeader.textContent = "Project List";
+  const projectListHeader = document.createElement('div');
+  projectListHeader.id = "project-list-header-div";
   projectListDiv.appendChild(projectListHeader);
+  // Header: title
+  const projectListTitle = document.createElement('h2');
+  projectListTitle.textContent = "Project List";
+  projectListHeader.appendChild(projectListTitle);
   // New Project Button
   const newProjectButton = document.createElement('button');
   newProjectButton.textContent = "New Project";
   newProjectButton.addEventListener('click', () => {
     displayProjectDialog(CREATE_PROJECT, {});
   });
-  projectListDiv.appendChild(newProjectButton);
+  projectListHeader.appendChild(newProjectButton);
   // Project List Ul (to be populated by "render ... " below)
   const projectListUl = document.createElement('ul');
   projectListUl.id = 'project-list-ul';
@@ -68,41 +72,55 @@ const Display = (function() {
       projectDiv.removeChild(projectDiv.firstChild);
     }; // ... to write a new one
 
-    // title
+    // header
+    const headerDiv = document.createElement('div');
+    headerDiv.id = "project-header-div";
+    projectDiv.appendChild(headerDiv);
+
+    // header: title
     const titleHeader = document.createElement('h3');
     try { // handle "no active projects"
       titleHeader.textContent = project.title;
-      projectDiv.appendChild(titleHeader);
+      headerDiv.appendChild(titleHeader);
     } catch(e) {
       titleHeader.textContent = "No active projects";
-      projectDiv.appendChild(titleHeader);
+      headerDiv.appendChild(titleHeader);
       return;
     }
 
-    // "new todo" button
+    // header: buttons
+    const buttonsSpan = document.createElement('span');
+    buttonsSpan.id = "project-buttons"
+    headerDiv.appendChild(buttonsSpan);
+
+    // header buttons: "new todo" button
     const newTodoButton = document.createElement('button');
     newTodoButton.textContent = "New Todo";
     newTodoButton.addEventListener('click', () => {
       displayTodoDialog(CREATE_TODO, {});
     }); 
-    projectDiv.appendChild(newTodoButton);
+    buttonsSpan.appendChild(newTodoButton);
 
-    // "edit project" button
+    // header buttons: "edit project" button
     const editProjectButton = document.createElement('button');
     editProjectButton.textContent = "Edit Project";
     editProjectButton.addEventListener('click', () => {
       console.log('editing project');
       displayProjectDialog(EDIT_PROJECT, {project});
     });
-    projectDiv.appendChild(editProjectButton);
+    buttonsSpan.appendChild(editProjectButton);
 
-    // "delete project" button
+    // header buttons: "delete project" button
     const deleteProjectButton = document.createElement('button');
     deleteProjectButton.textContent = "Delete Project";
     deleteProjectButton.addEventListener('click', (e) => {
       PubSub.publish(DELETE_PROJECT, project)
     });
-    projectDiv.appendChild(deleteProjectButton);
+    buttonsSpan.appendChild(deleteProjectButton);
+
+    // line break TODO: replace with padding/margin?
+    projectDiv.appendChild(document.createElement('br'));
+    projectDiv.appendChild(document.createElement('br'));
 
     // create a table to organize todos
     const todoTable = document.createElement('table');

@@ -33,12 +33,102 @@
 
 
 /* Project list styles */
+#project-list-header-div {
+  padding: 1em .2em 2em;
+}
+
+#project-list-header-div h2 {
+  float: left;
+  margin: auto;
+}
+
+#project-list-header-div button {
+  float: right;
+}
+
+#project-list-ul li {
+  padding: .3em .2em;
+  font-size: large;
+}
+
 #project-list-ul li:hover {
   background-color: lightgrey;  
 }
 
 
 /* Project and Todo list styles */
+#project-header-div {
+  display: block;
+  padding: 1em .2em 0em;
+  border-top: 1px solid black;
+}
+
+#project-header-div h3 {
+  float: left;
+  margin: 0;
+}
+
+#project-buttons {
+  float: right;
+}
+
 span.complete {
   text-decoration: line-through;
 }
+
+/* Table styles */
+table {
+  table-layout: fixed;
+  width: 100%;
+  border-collapse: collapse;
+}
+
+thead th:nth-child(1) {
+  width: 10%;
+}
+
+thead th:nth-child(2) {
+  width: 10%;
+}
+
+thead th:nth-child(3) {
+  width: 30%;
+}
+
+thead th:nth-child(4) {
+  width: 15%;
+}
+
+thead th:nth-child(5) {
+  width: 10%;
+} 
+
+thead th:nth-child(6) {
+  width: 10%;
+}
+
+thead th {
+  background-color: #a0c6ff;
+}
+
+tbody tr:nth-child(odd) {
+  background-color: #f5f9ff;
+}
+
+tbody tr:nth-child(even) {
+  background-color: #deebff;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  /* border-left: 1px solid black; */
+}
+
+/* th:first-child, td:first-child {
+  border-left: none;
+} 
+
+td.title {
+  font-style: italic;
+} */

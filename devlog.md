@@ -1,16 +1,8 @@
 # TODO:
-* Be able to tab through projects or separate lists of todos
-  * When a user first opens the app, there should be some sort of ‘default’ project to which all of their todos are put. 
-  * Users should be able to create new projects and choose which project their todos go into.
-
-* The look of the User Interface is up to you, but it should be able to do the following:
-    * view all projects
-    * view all todos in each project (probably just the title and duedate.. perhaps changing color for different priorities)
-    * expand a single todo to see/edit it’s details
-    * delete a todo
-
+* Add more styles:
+  * expand a single todo to see/edit it’s details
+  * make cute images like "pencil" and "trash" can for edit and delete buttons
 * Consider external libraries like date-fns, which gives you a bunch of handy functions for formatting and manipulating dates and times
-
 * Implement an MVC architecture
 
 
@@ -22,8 +14,11 @@
 * Create, edit, and delete are working 
 * Enable several Todo Lists / projects
 * Move 'topic constants' to a single place; make symbols
-* Make a "Todo" object: either a class, module, or factory function
-* Has properties: title, description, dueDate, priority
+* Make a "Todo" object: either a class, module, or factory function. Has properties: title, description, dueDate, priority
 * Application logic (i.e. creating new todos, setting todos as complete, changing todo priority etc.) should be separate from the DOM-related stuff, so keep all of those things in separate modules.
 * Use localStorage to save users' projects and todos
+* Add styles to user interface:
+    * view all projects
+    * view all todos in each project (probably just the title and duedate.. perhaps changing color for different priorities)
+    * delete a todo
 

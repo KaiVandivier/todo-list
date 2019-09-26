@@ -1,3 +1,7 @@
+/* Global Styles */
+* {
+  box-sizing: border-box;
+}
 
 /* Dialog styles */
 .hidden {
@@ -122,13 +126,4 @@ tbody tr:nth-child(even) {
 th, td {
   padding: 10px;
   text-align: left;
-  /* border-left: 1px solid black; */
 }
-
-/* th:first-child, td:first-child {
-  border-left: none;
-} 
-
-td.title {
-  font-style: italic;
-} */

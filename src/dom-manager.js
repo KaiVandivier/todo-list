@@ -9,9 +9,9 @@ import {
   RENDER_PROJECT_LIST,
   RENDER_PROJECT,
   SWITCH_PROJECT,
-} from './event-types.js';
+} from './event-types';
 
-const Display = (function() {
+const Display = (function () {
   const root = document.getElementById('root');
   let submitProjectFormMethod = null;
   let submitTodoFormMethod = null;
@@ -23,15 +23,15 @@ const Display = (function() {
   root.appendChild(projectListDiv);
   // Project List Header
   const projectListHeader = document.createElement('div');
-  projectListHeader.id = "project-list-header-div";
+  projectListHeader.id = 'project-list-header-div';
   projectListDiv.appendChild(projectListHeader);
   // Header: title
   const projectListTitle = document.createElement('h2');
-  projectListTitle.textContent = "Project List";
+  projectListTitle.textContent = 'Project List';
   projectListHeader.appendChild(projectListTitle);
   // New Project Button
   const newProjectButton = document.createElement('button');
-  newProjectButton.textContent = "New Project";
+  newProjectButton.textContent = 'New Project';
   newProjectButton.addEventListener('click', () => {
     displayProjectDialog(CREATE_PROJECT, {});
   });
@@ -44,9 +44,9 @@ const Display = (function() {
   // Project Div (container)
   const projectDiv = document.createElement('div');
   root.appendChild(projectDiv);
-  projectDiv.id = 'project-div'
+  projectDiv.id = 'project-div';
 
-  const renderProjectList = function(msg, projectList) {
+  const renderProjectList = function (msg, projectList) {
     console.log(msg);
     // clear project list
     while (projectListUl.firstChild) {
@@ -60,21 +60,21 @@ const Display = (function() {
       projectListUl.appendChild(projectLi);
       projectLi.addEventListener('click', (e) => {
         PubSub.publish(SWITCH_PROJECT, e.target.getAttribute('data-index'));
-      })
+      });
     });
   };
 
-  const renderProject = function(msg, project) {
+  const renderProject = function (msg, project) {
     console.log(msg);
 
     // clear project div ...
     while (projectDiv.firstChild) {
       projectDiv.removeChild(projectDiv.firstChild);
-    }; // ... to write a new one
+    } // ... to write a new one
 
     // header
     const headerDiv = document.createElement('div');
-    headerDiv.id = "project-header-div";
+    headerDiv.id = 'project-header-div';
     projectDiv.appendChild(headerDiv);
 
     // header: title
@@ -82,39 +82,39 @@ const Display = (function() {
     try { // handle "no active projects"
       titleHeader.textContent = project.title;
       headerDiv.appendChild(titleHeader);
-    } catch(e) {
-      titleHeader.textContent = "No active projects";
+    } catch (e) {
+      titleHeader.textContent = 'No active projects';
       headerDiv.appendChild(titleHeader);
       return;
     }
 
     // header: buttons
     const buttonsSpan = document.createElement('span');
-    buttonsSpan.id = "project-buttons"
+    buttonsSpan.id = 'project-buttons';
     headerDiv.appendChild(buttonsSpan);
 
     // header buttons: "new todo" button
     const newTodoButton = document.createElement('button');
-    newTodoButton.textContent = "New Todo";
+    newTodoButton.textContent = 'New Todo';
     newTodoButton.addEventListener('click', () => {
       displayTodoDialog(CREATE_TODO, {});
-    }); 
+    });
     buttonsSpan.appendChild(newTodoButton);
 
     // header buttons: "edit project" button
     const editProjectButton = document.createElement('button');
-    editProjectButton.textContent = "Edit Project";
+    editProjectButton.textContent = 'Edit Project';
     editProjectButton.addEventListener('click', () => {
       console.log('editing project');
-      displayProjectDialog(EDIT_PROJECT, {project});
+      displayProjectDialog(EDIT_PROJECT, { project });
     });
     buttonsSpan.appendChild(editProjectButton);
 
     // header buttons: "delete project" button
     const deleteProjectButton = document.createElement('button');
-    deleteProjectButton.textContent = "Delete Project";
-    deleteProjectButton.addEventListener('click', (e) => {
-      PubSub.publish(DELETE_PROJECT, project)
+    deleteProjectButton.textContent = 'Delete Project';
+    deleteProjectButton.addEventListener('click', () => {
+      PubSub.publish(DELETE_PROJECT, project);
     });
     buttonsSpan.appendChild(deleteProjectButton);
 
@@ -128,10 +128,10 @@ const Display = (function() {
 
     const todoHead = document.createElement('thead');
     todoTable.appendChild(todoHead);
-    const titles = ['Done', 'Priority', 'Title', 'Due Date', 'Edit', 'Delete']
+    const titles = ['Done', 'Priority', 'Title', 'Due Date', 'Edit', 'Delete'];
     titles.forEach((title) => {
       const th = document.createElement('th');
-      th.scope = "col";
+      th.scope = 'col';
       th.textContent = title;
       todoHead.appendChild(th);
     });
@@ -144,9 +144,9 @@ const Display = (function() {
     });
   };
 
-  const renderTodo = function(/*todoUl,*/ todoBody, todo, index) {
+  const renderTodo = function (/* todoUl, */ todoBody, todo, index) {
     const todoRow = document.createElement('tr');
-    todoBody.appendChild(todoRow)
+    todoBody.appendChild(todoRow);
 
     // 'Mark complete' button
     const buttonCell = document.createElement('td');
@@ -160,7 +160,7 @@ const Display = (function() {
       const todoSpan = e.target.parentElement.querySelector('span');
       todoSpan.classList.toggle('complete');
     }
-    
+
     // priority indicator
     const priorityCell = document.createElement('td');
     todoRow.appendChild(priorityCell);
@@ -188,7 +188,7 @@ const Display = (function() {
     editCell.appendChild(editButton);
     editButton.addEventListener('click', () => {
       console.log('beep! editing todo.');
-      displayTodoDialog(EDIT_TODO, {todo, index});
+      displayTodoDialog(EDIT_TODO, { todo, index });
     });
 
     // draw delete button (trash icon)
@@ -198,13 +198,13 @@ const Display = (function() {
     deleteButton.textContent = 'Delete';
     deleteCell.appendChild(deleteButton);
     deleteButton.addEventListener('click', () => {
-      PubSub.publish(DELETE_TODO, {index});
+      PubSub.publish(DELETE_TODO, { index });
     });
   };
 
 
-  // Project Dialog setup: 
-  function displayProjectDialog(method, data) { 
+  // Project Dialog setup:
+  function displayProjectDialog(method, data) {
     // selector setup
     const dialog = document.getElementById('project-form-container');
     const dialogMask = dialog.querySelector('div.dialog-mask');
@@ -215,16 +215,16 @@ const Display = (function() {
 
     // Show the dialog
     dialog.classList.add('opened');
-    
+
     // Populate fields appropriately for "new" or "edit"
     if (method === CREATE_PROJECT) {
-      form.elements.title.value = "New Project"; 
+      form.elements.title.value = 'New Project';
     } else if (method === EDIT_PROJECT) {
       form.elements.title.value = data.project.title;
     }
 
     // Listen for form completion
-    submitProjectFormMethod = submitProjectForm.bind({method, data});
+    submitProjectFormMethod = submitProjectForm.bind({ method, data });
     form.addEventListener('submit', submitProjectFormMethod);
 
     // Add listeners to close window
@@ -238,8 +238,9 @@ const Display = (function() {
 
   function submitProjectForm(e) {
     console.log('form submitted!');
-    const newData = Object.assign(this.data, {title: e.target.elements.title.value}); // handles either "edit" or "new"
-    PubSub.publish(this.method, newData)
+    // handles either "edit" or "new"
+    const newData = Object.assign(this.data, { title: e.target.elements.title.value });
+    PubSub.publish(this.method, newData);
     e.preventDefault(); // stay on same page
     closeProjectDialog();
   }
@@ -268,7 +269,7 @@ const Display = (function() {
   }
 
   // Todo Dialog setup:
-  function displayTodoDialog(method, data) {    
+  function displayTodoDialog(method, data) {
     // selector setup
     const dialog = document.getElementById('todo-form-container');
     const dialogMask = dialog.querySelector('div.dialog-mask');
@@ -282,10 +283,10 @@ const Display = (function() {
 
     // Populate fields appropriately for "new" or "edit"
     if (method === CREATE_TODO) {
-      form.elements.title.value = "New Todo"; 
-      form.elements.description.value = "";
-      form.elements.priority.value = "normal";
-      form.elements.dueDate.value = "today";
+      form.elements.title.value = 'New Todo';
+      form.elements.description.value = '';
+      form.elements.priority.value = 'normal';
+      form.elements.dueDate.value = 'today';
     } else if (method === EDIT_TODO) {
       form.elements.title.value = data.todo.title;
       form.elements.description.value = data.todo.description;
@@ -307,11 +308,11 @@ const Display = (function() {
 
   function submitTodoForm(e) {
     console.log('form submitted!');
-    const elements = e.target.elements;
+    const { elements } = e.target;
     const properties = ['title', 'description', 'priority', 'dueDate'];
     const info = {};
     properties.forEach((p) => info[p] = elements[p].value);
-    const newData = Object.assign(this.data, info)
+    const newData = Object.assign(this.data, info);
     PubSub.publish(this.method, newData);
     e.preventDefault(); // stay on same page
     closeTodoDialog();
@@ -342,4 +343,4 @@ const Display = (function() {
 
   PubSub.subscribe(RENDER_PROJECT_LIST, renderProjectList);
   PubSub.subscribe(RENDER_PROJECT, renderProject);
-})();
+}());

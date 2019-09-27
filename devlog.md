@@ -1,7 +1,8 @@
 # TODO:
+* Configure webpack for deployment
 * Add more styles:
   * expand a single todo to see/edit it’s details
-  * make cute images like "pencil" and "trash" can for edit and delete buttons
+  * make cute images like "pencil" and "trashcan" for edit and delete buttons
 * Consider external libraries like date-fns, which gives you a bunch of handy functions for formatting and manipulating dates and times
 * Implement an MVC architecture
 

@@ -1,10 +1,10 @@
 // Make a project object
 
-const project = function (title, todoList) {
-  todoList = todoList || [];
+const project = function project(title, todoListIn) {
+  const todoList = todoListIn || [];
   return {
     title,
-    todoList,
+    todoList
   };
 };
 

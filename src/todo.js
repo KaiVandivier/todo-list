@@ -1,10 +1,9 @@
-
-const todo = function (title, description, dueDate, priority) {
+const todo = function todo(title, description, dueDate, priority) {
   return {
     title,
     description,
     dueDate,
-    priority,
+    priority
   };
 };
 
